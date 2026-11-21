@@ -1,0 +1,78 @@
+{
+  "architectural_methodologies": [
+    {
+      "id": "islands-and-selective-hydration",
+      "name": "Islands Architecture and Selective Hydration",
+      "pioneers": [
+        "Jason Miller",
+        "Astro Core Team"
+      ],
+      "topics": [
+        "Partial hydration",
+        "Static HTML base",
+        "Isolated interactive roots"
+      ]
+    },
+    {
+      "id": "react-server-components",
+      "name": "React Server Components (RSC) and Streaming",
+      "pioneers": [
+        "React Core Team"
+      ],
+      "topics": [
+        "Zero-bundle data fetching",
+        "Flight protocol",
+        "Server-client boundaries"
+      ]
+    },
+    {
+      "id": "local-first-and-crdts",
+      "name": "Local-First Software and CRDTs",
+      "pioneers": [
+        "Ink & Switch",
+        "Martin Kleppmann",
+        "Geoffrey Litt"
+      ],
+      "topics": [
+        "Offline-write",
+        "Conflict-free replicated data types",
+        "Zero-latency UI"
+      ]
+    },
+    {
+      "id": "micro-frontends-and-module-federation",
+      "name": "Micro-Frontends and Module Federation",
+      "pioneers": [
+        "Zack Jackson",
+        "Martin Fowler"
+      ],
+      "topics": [
+        "Independent deployment",
+        "Runtime shared dependencies",
+        "Team boundaries"
+      ]
+    }
+  ],
+  "engineering_blogs_and_rfcs": [
+    {
+      "name": "Figma Engineering",
+      "url": "https://www.figma.com/blog/section/engineering/",
+      "focus": "Wasm, WebGL/WebGPU, multiplayer CRDTs, rendering engines"
+    },
+    {
+      "name": "Netflix TechBlog",
+      "url": "https://netflixtechblog.com/",
+      "focus": "Client-side telemetry, TV/mobile web performance, selective rendering"
+    },
+    {
+      "name": "Uber Engineering",
+      "url": "https://www.uber.com/blog/engineering/",
+      "focus": "Micro-frontends, design systems at massive scale, monorepo tooling"
+    },
+    {
+      "name": "Shopify Engineering",
+      "url": "https://shopify.engineering/",
+      "focus": "Liquid to Hydrogen/Remix migration, storefront performance, edge caching"
+    }
+  ]
+}

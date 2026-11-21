@@ -1,0 +1,28 @@
+name: Correction or outdated advice
+description: Something in the book is wrong, outdated, or missing a caveat.
+labels: ["correction"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: Link to the page (or the file in book/).
+      placeholder: https://blip-cmd.github.io/frontend-engineering-book-of-choices/chapters/where-code-runs/
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong?
+      description: Quote the sentence or table row, and explain the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Link to official docs, a spec, release notes, or a benchmark that supports the correction.
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix

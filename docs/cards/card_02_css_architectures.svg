@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Top Badge Bar -->
+  <g transform="translate(60, 48)">
+    <rect width="365" height="28" rx="14" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <circle cx="16" cy="14" r="5" fill="#38bdf8"/>
+    <text x="28" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="bold" fill="#94a3b8" letter-spacing="1">FRONTEND ENGINEERING AS A BOOK OF CHOICES</text>
+  </g>
+
+  <!-- Title & Subtitle -->
+  <text x="60" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="30" font-weight="800" fill="#f8fafc" letter-spacing="-0.5">CSS Architecture: Tailwind vs Runtime CSS-in-JS vs Zero-Runtime</text>
+  <text x="60" y="152" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" fill="#94a3b8">Balancing runtime bundle cost, design token ergonomics, and server streaming</text>
+
+  <!-- Matrix Columns -->
+  
+    <!-- Column 1: Utility-First CSS -->
+    <g transform="translate(60, 190)">
+      <rect width="340" height="360" rx="12" fill="#111827" stroke="#06b6d4" stroke-width="1.5" stroke-opacity="0.6"/>
+      <rect width="340" height="60" rx="12" fill="#1e293b" fill-opacity="0.8"/>
+      <rect x="0" y="48" width="340" height="12" fill="#1e293b" fill-opacity="0.8"/>
+      
+      <!-- Column Header -->
+      <text x="20" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="19" font-weight="bold" fill="#f8fafc">Utility-First CSS</text>
+      <rect x="220" y="16" width="105" height="24" rx="12" fill="#06b6d4" fill-opacity="0.15"/>
+      <text x="272" y="32" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="bold" fill="#06b6d4">Tailwind CSS</text>
+      
+      <!-- Primary Advantage -->
+      <text x="20" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="bold" fill="#38bdf8">PRIMARY ADVANTAGE</text>
+      <foreignObject x="20" y="100" width="300" height="70">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #cbd5e1; line-height: 1.4;">
+          Sub-15 KB fixed CSS bundle; zero runtime JS parsing overhead; dead-code purged.
+        </div>
+      </foreignObject>
+      
+      <!-- Critical Bottleneck -->
+      <text x="20" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="bold" fill="#f87171">PRIMARY TRADE-OFF</text>
+      <foreignObject x="20" y="195" width="300" height="70">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #cbd5e1; line-height: 1.4;">
+          Verbose HTML markup; requires discipline with component abstraction.
+        </div>
+      </foreignObject>
+
+      <!-- Best For -->
+      <text x="20" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="bold" fill="#34d399">BEST FIT</text>
+      <foreignObject x="20" y="290" width="300" height="60">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 500; color: #e2e8f0; line-height: 1.35;">
+          Public marketing, e-commerce storefronts, high-traffic consumer web.
+        </div>
+      </foreignObject>
+    </g>
+
+    <!-- Column 2: Runtime CSS-in-JS -->
+    <g transform="translate(430, 190)">
+      <rect width="340" height="360" rx="12" fill="#111827" stroke="#ec4899" stroke-width="1.5" stroke-opacity="0.6"/>
+      <rect width="340" height="60" rx="12" fill="#1e293b" fill-opacity="0.8"/>
+      <rect x="0" y="48" width="340" height="12" fill="#1e293b" fill-opacity="0.8"/>
+      
+      <!-- Column Header -->
+      <text x="20" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="19" font-weight="bold" fill="#f8fafc">Runtime CSS-in-JS</text>
+      <rect x="220" y="16" width="105" height="24" rx="12" fill="#ec4899" fill-opacity="0.15"/>
+      <text x="272" y="32" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="bold" fill="#ec4899">Styled-Components / Emotion</text>
+      
+      <!-- Primary Advantage -->
+      <text x="20" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="bold" fill="#38bdf8">PRIMARY ADVANTAGE</text>
+      <foreignObject x="20" y="100" width="300" height="70">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #cbd5e1; line-height: 1.4;">
+          Co-located styling with props; dynamic runtime theme computation.
+        </div>
+      </foreignObject>
+      
+      <!-- Critical Bottleneck -->
+      <text x="20" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="bold" fill="#f87171">PRIMARY TRADE-OFF</text>
+      <foreignObject x="20" y="195" width="300" height="70">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #cbd5e1; line-height: 1.4;">
+          Incompatible with React Server Components; degrades Interaction to Next Paint (INP).
+        </div>
+      </foreignObject>
+
+      <!-- Best For -->
+      <text x="20" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="bold" fill="#34d399">BEST FIT</text>
+      <foreignObject x="20" y="290" width="300" height="60">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 500; color: #e2e8f0; line-height: 1.35;">
+          Legacy internal enterprise applications without SSR requirements.
+        </div>
+      </foreignObject>
+    </g>
+
+    <!-- Column 3: Zero-Runtime Type-Safe -->
+    <g transform="translate(800, 190)">
+      <rect width="340" height="360" rx="12" fill="#111827" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.6"/>
+      <rect width="340" height="60" rx="12" fill="#1e293b" fill-opacity="0.8"/>
+      <rect x="0" y="48" width="340" height="12" fill="#1e293b" fill-opacity="0.8"/>
+      
+      <!-- Column Header -->
+      <text x="20" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="19" font-weight="bold" fill="#f8fafc">Zero-Runtime Type-Safe</text>
+      <rect x="220" y="16" width="105" height="24" rx="12" fill="#10b981" fill-opacity="0.15"/>
+      <text x="272" y="32" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="bold" fill="#10b981">StyleX / Panda CSS</text>
+      
+      <!-- Primary Advantage -->
+      <text x="20" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="bold" fill="#38bdf8">PRIMARY ADVANTAGE</text>
+      <foreignObject x="20" y="100" width="300" height="70">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #cbd5e1; line-height: 1.4;">
+          Compile-time extraction; deterministic class ordering; strict design token contracts.
+        </div>
+      </foreignObject>
+      
+      <!-- Critical Bottleneck -->
+      <text x="20" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="bold" fill="#f87171">PRIMARY TRADE-OFF</text>
+      <foreignObject x="20" y="195" width="300" height="70">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; color: #cbd5e1; line-height: 1.4;">
+          More complex build step; requires strict AST compiler tooling.
+        </div>
+      </foreignObject>
+
+      <!-- Best For -->
+      <text x="20" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="bold" fill="#34d399">BEST FIT</text>
+      <foreignObject x="20" y="290" width="300" height="60">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 500; color: #e2e8f0; line-height: 1.35;">
+          Massive multi-brand design systems, large-scale cross-team repos.
+        </div>
+      </foreignObject>
+    </g>
+
+
+  <!-- Footer -->
+  <text x="60" y="592" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="500" fill="#64748b">The Architectural Decision Matrix for Senior Web Engineers</text>
+  <text x="1140" y="592" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="bold" fill="#38bdf8">blip-cmd / bookofchoices.dev</text>
+</svg>

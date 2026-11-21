@@ -1,0 +1,114 @@
+[
+  {
+    "title": "Index: Production Engineering Tech Blogs & Architectural RFCs",
+    "identifier": "engineering_blogs_index",
+    "category": "free_resources",
+    "author": "N/A",
+    "relative_path": "library/free_resources/engineering_blogs_index.md"
+  },
+  {
+    "title": "Architectural Methodology: Islands Architecture and Selective Hydration",
+    "identifier": "islands-and-selective-hydration",
+    "category": "methodologies",
+    "author": "N/A",
+    "relative_path": "library/methodologies/islands_and_selective_hydration.md"
+  },
+  {
+    "title": "Architectural Methodology: Local-First Software and CRDTs",
+    "identifier": "local-first-and-crdts",
+    "category": "methodologies",
+    "author": "N/A",
+    "relative_path": "library/methodologies/local_first_and_crdts.md"
+  },
+  {
+    "title": "Architectural Methodology: Micro-Frontends and Module Federation",
+    "identifier": "micro-frontends-and-module-federation",
+    "category": "methodologies",
+    "author": "N/A",
+    "relative_path": "library/methodologies/micro_frontends_and_module_federation.md"
+  },
+  {
+    "title": "Architectural Methodology: Server-Driven UI (SDUI)",
+    "identifier": "server-driven-ui",
+    "category": "methodologies",
+    "author": "N/A",
+    "relative_path": "library/methodologies/server_driven_ui.md"
+  },
+  {
+    "title": "Research & Emerging: Embedded Client Databases and Storage Topologies",
+    "identifier": "browser_storage_and_embedded_databases",
+    "category": "research_and_emerging",
+    "author": "N/A",
+    "relative_path": "library/research_and_emerging/browser_storage_and_embedded_databases.md"
+  },
+  {
+    "title": "Research & Emerging: Modern Browser Primitives & Progressive Web Applications",
+    "identifier": "modern_browser_apis_and_pwa",
+    "category": "research_and_emerging",
+    "author": "N/A",
+    "relative_path": "library/research_and_emerging/modern_browser_apis_and_pwa.md"
+  },
+  {
+    "title": "Research & Emerging: WebAssembly (Wasm) and WebGPU in Frontend Architecture",
+    "identifier": "webassembly_and_webgpu",
+    "category": "research_and_emerging",
+    "author": "N/A",
+    "relative_path": "library/research_and_emerging/webassembly_and_webgpu.md"
+  },
+  {
+    "title": "Data Fetching and API Contracts: REST vs. GraphQL vs. tRPC vs. Server Actions",
+    "identifier": "data_fetching_and_api_contracts",
+    "category": "tools_and_frameworks",
+    "author": "N/A",
+    "relative_path": "library/tools_and_frameworks/data_fetching_and_api_contracts.md"
+  },
+  {
+    "title": "Frontend Security & Hardening: Defending the Client Boundary",
+    "identifier": "frontend_security_and_hardening",
+    "category": "tools_and_frameworks",
+    "author": "N/A",
+    "relative_path": "library/tools_and_frameworks/frontend_security_and_hardening.md"
+  },
+  {
+    "title": "Meta-Frameworks Comparison: Next.js vs. Remix vs. Astro vs. SvelteKit vs. Nuxt",
+    "identifier": "meta_frameworks_comparison",
+    "category": "tools_and_frameworks",
+    "author": "N/A",
+    "relative_path": "library/tools_and_frameworks/meta_frameworks_comparison.md"
+  },
+  {
+    "title": "Monorepos & Workspace Tooling: Turborepo vs. Nx vs. pnpm Workspaces",
+    "identifier": "monorepo_and_build_tooling",
+    "category": "tools_and_frameworks",
+    "author": "N/A",
+    "relative_path": "library/tools_and_frameworks/monorepo_and_build_tooling.md"
+  },
+  {
+    "title": "Reactivity Engines: Virtual DOM vs. Signals vs. Direct AST Compilation",
+    "identifier": "reactivity_engines",
+    "category": "tools_and_frameworks",
+    "author": "N/A",
+    "relative_path": "library/tools_and_frameworks/reactivity_engines.md"
+  },
+  {
+    "title": "State and Cache Topologies: Client State Stores vs. Remote Server Caches",
+    "identifier": "state_and_cache",
+    "category": "tools_and_frameworks",
+    "author": "N/A",
+    "relative_path": "library/tools_and_frameworks/state_and_cache.md"
+  },
+  {
+    "title": "Styling Paradigms: Utility-First vs. CSS Modules vs. Zero-Runtime vs. Runtime CSS-in-JS",
+    "identifier": "styling_paradigms",
+    "category": "tools_and_frameworks",
+    "author": "N/A",
+    "relative_path": "library/tools_and_frameworks/styling_paradigms.md"
+  },
+  {
+    "title": "Testing & QA Strategy: Unit vs. Integration vs. E2E vs. Visual Regression",
+    "identifier": "testing_and_qa_matrix",
+    "category": "tools_and_frameworks",
+    "author": "N/A",
+    "relative_path": "library/tools_and_frameworks/testing_and_qa_matrix.md"
+  }
+]

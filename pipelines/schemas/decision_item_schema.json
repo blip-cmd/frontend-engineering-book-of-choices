@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ArchitecturalChoiceItem",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "category",
+    "status",
+    "overview",
+    "trade_offs",
+    "constraints_match",
+    "when_to_use",
+    "when_to_avoid"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique slug identifier (e.g., execution-islands-architecture)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable title of the pattern, framework, or tool"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "execution_boundary",
+        "reactivity_engine",
+        "state_and_cache",
+        "api_contract",
+        "design_engineering",
+        "delivery_and_build"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "industry_standard",
+        "emerging_production",
+        "experimental_research",
+        "legacy_maintenance"
+      ]
+    },
+    "overview": {
+      "type": "string",
+      "description": "Concise summary of the mechanism and mental model"
+    },
+    "trade_offs": {
+      "type": "object",
+      "required": ["pros", "cons"],
+      "properties": {
+        "pros": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "cons": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "constraints_match": {
+      "type": "object",
+      "properties": {
+        "team_size": { "type": "string" },
+        "seo_criticality": { "type": "string", "enum": ["vital", "optional", "irrelevant"] },
+        "initial_load_latency_sla_ms": { "type": "number" },
+        "infrastructure_cost_profile": { "type": "string", "enum": ["near_zero", "modest", "high_compute"] },
+        "offline_requirement": { "type": "string", "enum": ["none", "read_cache", "full_offline_write"] }
+      }
+    },
+    "when_to_use": {
+      "type": "string",
+      "description": "Definitive trigger conditions for choosing this path"
+    },
+    "when_to_avoid": {
+      "type": "string",
+      "description": "Definitive contraindications for choosing this path"
+    },
+    "enabling_libraries": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "research_references": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+name: New topic or experience report
+description: Suggest a missing topic, or share a trade-off you have lived through.
+labels: ["content"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type
+      options:
+        - Missing topic or chapter
+        - Real-world experience (a choice I made and what it cost)
+        - New decision playbook
+        - Further reading suggestion
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: What should the book cover, and which chapter does it belong to? For experience reports, describe the constraints, the choice, and the outcome.
+    validations:
+      required: true

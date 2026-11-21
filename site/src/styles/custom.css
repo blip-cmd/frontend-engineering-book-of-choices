@@ -1,0 +1,16 @@
+/* Brand accent: sky blue and violet, matching the original viewer. */
+:root {
+	--sl-color-accent-low: #0c2a3d;
+	--sl-color-accent: #0284c7;
+	--sl-color-accent-high: #bae6fd;
+}
+:root[data-theme='light'] {
+	--sl-color-accent-low: #e0f2fe;
+	--sl-color-accent: #0369a1;
+	--sl-color-accent-high: #0c4a6e;
+}
+/* Wide comparison tables scroll instead of squashing on phones. */
+.sl-markdown-content table {
+	display: block;
+	overflow-x: auto;
+}

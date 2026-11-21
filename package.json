@@ -1,0 +1,44 @@
+{
+  "name": "@blip-cmd/choices",
+  "version": "1.0.0",
+  "description": "Architectural decision engine, starter recipe scaffolding, and ADR generator from Frontend Engineering as a Book of Choices",
+  "bin": {
+    "choices": "./bin/choices.js"
+  },
+  "main": "./bin/choices.js",
+  "scripts": {
+    "test": "node --test tests/test_cli.js",
+    "test:python": "python -m unittest discover -s tests -p \"test_*.py\"",
+    "audit": "python pipelines/scripts/audit_repo_standards.py",
+    "choices": "node ./bin/choices.js",
+    "site:dev": "npm --prefix site run dev",
+    "site:build": "npm --prefix site run build"
+  },
+  "keywords": [
+    "frontend-architecture",
+    "decision-matrix",
+    "scaffolding",
+    "adr-generator",
+    "reactivity-engine",
+    "recipes"
+  ],
+  "author": "blip-cmd",
+  "license": "MIT",
+  "files": [
+    "bin/",
+    "recipes/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "homepage": "https://blip-cmd.github.io/frontend-engineering-book-of-choices/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blip-cmd/frontend-engineering-book-of-choices.git"
+  },
+  "bugs": {
+    "url": "https://github.com/blip-cmd/frontend-engineering-book-of-choices/issues"
+  }
+}

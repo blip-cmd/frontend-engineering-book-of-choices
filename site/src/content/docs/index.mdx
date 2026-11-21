@@ -1,0 +1,74 @@
+---
+title: Frontend Engineering as a Book of Choices
+description: A free, open reference for frontend architecture decisions. Map your real constraints (SEO, team, latency, data, budget) to the rendering, state, API and styling choices that fit.
+template: splash
+editUrl: false
+lastUpdated: false
+hero:
+  title: Frontend Engineering as a Book of Choices
+  tagline: There is no best framework. There are only trade-offs. This free, open book maps your real constraints to the architecture that fits, and shows you what each choice costs.
+  actions:
+    - text: Start reading
+      link: /frontend-engineering-book-of-choices/chapters/the-calculus-of-choices/
+      icon: right-arrow
+    - text: Try the calculator
+      link: /frontend-engineering-book-of-choices/calculator/
+      icon: puzzle
+      variant: secondary
+    - text: Star on GitHub
+      link: https://github.com/blip-cmd/frontend-engineering-book-of-choices
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Choose by constraint, not by hype
+
+Most guides tell you which tool to use. This book asks what you are building, for whom, and under which limits, then walks through the options that fit and the price of each one.
+
+<CardGrid>
+	<Card title="Where code runs" icon="laptop">
+		CSR, SSR, static generation, islands and server components: when each one wins, and when it hurts.
+	</Card>
+	<Card title="Reactivity and state" icon="random">
+		Virtual DOM, signals and compilers. Server caches versus client stores, and why most apps need less global state than they think.
+	</Card>
+	<Card title="APIs, styling, delivery" icon="setting">
+		REST, GraphQL, tRPC and server actions. CSS architectures. Bundlers, Core Web Vitals and the first-14 KB budget.
+	</Card>
+	<Card title="Offline and local-first" icon="rocket">
+		Client databases, CRDTs and sync engines for apps that must keep working without a network.
+	</Card>
+</CardGrid>
+
+## Pick a starting point
+
+<CardGrid>
+	<LinkCard
+		title="Architecture calculator"
+		description="Answer six questions about your project and get a recommended stack, with links to the reasoning."
+		href="/frontend-engineering-book-of-choices/calculator/"
+	/>
+	<LinkCard
+		title="Decision playbooks"
+		description="Ready-made blueprints for content sites, B2B SaaS, real-time dashboards, collaborative canvases and e-commerce."
+		href="/frontend-engineering-book-of-choices/playbooks/content-first-publishing/"
+	/>
+	<LinkCard
+		title="Anti-patterns appendix"
+		description="Fifteen architectural mistakes that look reasonable at first, and how to refactor out of them."
+		href="/frontend-engineering-book-of-choices/appendices/architecture-anti-patterns/"
+	/>
+	<LinkCard
+		title="Help write it"
+		description="Found something wrong or outdated? Lived through one of these trade-offs? Every issue and pull request makes the book better."
+		href="/frontend-engineering-book-of-choices/contribute/"
+	/>
+</CardGrid>
+
+## About this project
+
+This is a living, community-reviewed reference. The first draft was written with the help of AI tools and is being reviewed, sourced and extended chapter by chapter, in the open. Each page shows when it was last updated and has an "Edit page" link. If you spot a mistake, please [open an issue](https://github.com/blip-cmd/frontend-engineering-book-of-choices/issues).
+
+The writing is free to read and share under [CC BY-NC-ND 4.0](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/LICENSE-CONTENT.md). The code (calculator, CLI and starter recipes) is [MIT licensed](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/LICENSE).

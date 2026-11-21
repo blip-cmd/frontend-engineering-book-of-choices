@@ -1,0 +1,397 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const questions = [
+	{
+		id: 'seo',
+		label: 'How much does search and social discoverability matter?',
+		options: [
+			['critical', 'Critical: pages must rank on Google and preview well when shared'],
+			['moderate', 'Moderate: only the marketing and landing pages need to rank'],
+			['irrelevant', 'Not at all: it is behind a login (B2B SaaS, intranet, admin)'],
+		],
+	},
+	{
+		id: 'content',
+		label: 'What kind of content does it show?',
+		options: [
+			['static', 'Mostly the same for everyone (docs, blog, catalogue)'],
+			['dynamic', 'Personalised or changing constantly (feeds, dashboards, carts)'],
+		],
+	},
+	{
+		id: 'updates',
+		label: 'How often does the screen update?',
+		options: [
+			['standard', 'Normal interaction: clicks, forms, dialogs'],
+			['high', 'High-frequency streaming: dozens of updates per second or more'],
+		],
+	},
+	{
+		id: 'data',
+		label: 'Where does the data live?',
+		options: [
+			['remote', 'On a server: the app reads and writes through an API'],
+			['local', 'On the device first: must work offline and sync later'],
+		],
+	},
+	{
+		id: 'typescript',
+		label: 'Are the frontend and backend one TypeScript codebase?',
+		options: [
+			['yes', 'Yes: TypeScript on both sides, deployed together'],
+			['no', 'No: different languages, teams or release cycles'],
+		],
+	},
+	{
+		id: 'brand',
+		label: 'How custom does the design need to be?',
+		options: [
+			['custom', 'Distinctive brand: custom look, design tokens, theming'],
+			['standard', 'Standard: speed of building matters more than a unique look'],
+		],
+	},
+];
+---
+
+<StarlightPage
+	frontmatter={{
+		title: 'Frontend Architecture Calculator',
+		description:
+			'Answer six questions about your project and get a recommended frontend architecture: rendering, reactivity, state, API contract and UI layer, with the reasoning and trade-offs behind each choice.',
+		editUrl: 'https://github.com/blip-cmd/frontend-engineering-book-of-choices/edit/main/site/src/pages/calculator.astro',
+		tableOfContents: false,
+	}}
+>
+	<p>
+		Answer six questions about the project you are building. The calculator suggests a starting architecture and explains
+		why, with links to the chapter that covers each trade-off in depth. It is a starting point for a conversation with your
+		team, not a verdict.
+	</p>
+
+	<form id="calc" class="calc-form" data-base={base}>
+		{
+			questions.map((q) => (
+				<fieldset class="calc-question">
+					<legend>{q.label}</legend>
+					{q.options.map(([value, text], i) => (
+						<label class="calc-option">
+							<input type="radio" name={q.id} value={value} checked={i === 0} />
+							<span>{text}</span>
+						</label>
+					))}
+				</fieldset>
+			))
+		}
+	</form>
+
+	<h2 id="result-heading">Recommended starting architecture</h2>
+	<div id="results" class="calc-results" aria-live="polite" aria-labelledby="result-heading"></div>
+
+	<p class="calc-actions">
+		<button type="button" id="copy-link" class="calc-button">Copy link to these answers</button>
+		<span id="copy-status" role="status"></span>
+	</p>
+
+	<p class="calc-note">
+		Disagree with a recommendation? That is exactly the kind of feedback that improves this book.
+		<a href="https://github.com/blip-cmd/frontend-engineering-book-of-choices/issues/new">Open an issue</a> and tell us
+		what you would choose and why.
+	</p>
+</StarlightPage>
+
+<script>
+	type Answers = Record<string, string>;
+	type Rec = { area: string; choice: string; why: string; read: [string, string] };
+
+	const form = document.getElementById('calc') as HTMLFormElement;
+	const results = document.getElementById('results') as HTMLDivElement;
+	const base = form.dataset.base ?? '';
+	const page = (slug: string) => `${base}/${slug}/`;
+
+	const CH = {
+		rendering: ['chapters/where-code-runs', 'Chapter 1: Where Code Runs'],
+		reactivity: ['chapters/the-reactivity-dilemma', 'Chapter 2: The Reactivity Dilemma'],
+		state: ['chapters/state-and-cache-topologies', 'Chapter 3: State and Cache Topologies'],
+		api: ['chapters/the-networking-contract', 'Chapter 4: The Networking Contract'],
+		ui: ['chapters/design-engineering-and-ui', 'Chapter 5: Design Engineering and UI'],
+		offline: ['chapters/local-first-and-offline-resilience', 'Chapter 8: Local-First and Offline'],
+	} satisfies Record<string, [string, string]>;
+
+	const PLAYBOOKS: Record<string, [string, string]> = {
+		content: ['playbooks/content-first-publishing', 'Content-First Publishing and Documentation'],
+		ecommerce: ['playbooks/low-latency-ecommerce', 'Low-Latency Global E-Commerce'],
+		saas: ['playbooks/enterprise-b2b-saas', 'Enterprise B2B SaaS and Data Grids'],
+		realtime: ['playbooks/high-frequency-realtime-dashboard', 'High-Frequency Real-Time Dashboards'],
+		canvas: ['playbooks/collaborative-canvas-workspace', 'Collaborative Canvas and Document Workspaces'],
+	};
+
+	function recommend(a: Answers): { recs: Rec[]; playbook: [string, string] } {
+		const recs: Rec[] = [];
+		const localFirst = a.data === 'local';
+
+		// 1. Rendering / execution boundary
+		if (a.seo === 'critical' && a.content === 'static') {
+			recs.push({
+				area: 'Rendering',
+				choice: 'Static pages with interactive islands (for example Astro)',
+				why: 'Search engines and link previews get complete HTML instantly, and JavaScript is only shipped for the few parts of the page that are interactive.',
+				read: CH.rendering,
+			});
+		} else if (a.seo === 'critical') {
+			recs.push({
+				area: 'Rendering',
+				choice: 'Server-side rendering with streaming (for example Next.js, React Router, Nuxt or SvelteKit)',
+				why: 'Content that changes per request still needs indexable HTML. Rendering on the server, and streaming it, keeps first paint fast without making every page static.',
+				read: CH.rendering,
+			});
+		} else if (localFirst) {
+			recs.push({
+				area: 'Rendering',
+				choice: 'Client-rendered installable app (PWA built with Vite)',
+				why: 'An offline-first app must boot and run without a server round trip, so the browser does the rendering and a service worker caches the app shell.',
+				read: CH.offline,
+			});
+		} else {
+			recs.push({
+				area: 'Rendering',
+				choice: 'Client-rendered single-page app (Vite with React, Vue, Svelte or Solid)',
+				why: 'Behind a login, search ranking does not matter, and a single-page app is the simplest model to build and host (static files on a CDN).',
+				read: CH.rendering,
+			});
+		}
+		if (a.seo === 'moderate') {
+			recs.push({
+				area: 'Public pages',
+				choice: 'A separate static marketing site (for example Astro) in front of the app',
+				why: 'Only the public pages need to rank. Keeping them static and separate gives them fast, indexable HTML without forcing server rendering onto the whole app.',
+				read: CH.rendering,
+			});
+		}
+
+		// 2. Reactivity
+		recs.push(
+			a.updates === 'high'
+				? {
+						area: 'Reactivity',
+						choice: 'Fine-grained signals (Solid, Preact Signals, Svelte 5 runes, Vue refs)',
+						why: 'At dozens of updates per second, re-rendering whole component trees becomes the bottleneck. Signals update only the DOM nodes that depend on the changed value. Also batch incoming data and move parsing into a Web Worker.',
+						read: CH.reactivity,
+					}
+				: {
+						area: 'Reactivity',
+						choice: 'Any mainstream framework your team knows well (React, Vue, Svelte, Solid)',
+						why: 'At normal interaction rates, framework rendering speed is rarely the limit. Team experience, hiring and ecosystem matter more than benchmark differences.',
+						read: CH.reactivity,
+					},
+		);
+
+		// 3. State
+		recs.push(
+			localFirst
+				? {
+						area: 'State and data',
+						choice: 'Local database in the browser plus a sync engine or CRDTs (for example SQLite in Wasm or IndexedDB, with Yjs or Automerge)',
+						why: 'Reads and writes go to the device first, so the app works offline and feels instant. The cost is real: conflict handling, migrations and a sync protocol are now your problem.',
+						read: CH.offline,
+					}
+				: {
+						area: 'State and data',
+						choice: 'A server cache (TanStack Query or SWR) plus URL and component state',
+						why: 'Most "global state" is really a copy of server data. A server cache handles loading, caching, refetching and deduplication for you, which leaves very little that needs a global store.',
+						read: CH.state,
+					},
+		);
+
+		// 4. API contract
+		recs.push(
+			a.typescript === 'yes'
+				? {
+						area: 'API contract',
+						choice: 'tRPC or framework server functions (end-to-end TypeScript types)',
+						why: 'When both sides are TypeScript and ship together, the client can import the server types directly: no schema files and no code generation. It couples client and server releases, so it fits poorly with public or multi-language APIs.',
+						read: CH.api,
+					}
+				: {
+						area: 'API contract',
+						choice: 'REST described with OpenAPI, plus a generated typed client and runtime validation (for example Zod)',
+						why: 'A language-neutral contract lets separate teams and languages evolve independently, and generated types catch mismatches at build time. Validating responses at runtime catches the ones types cannot.',
+						read: CH.api,
+					},
+		);
+
+		// 5. UI layer
+		recs.push(
+			a.brand === 'custom'
+				? {
+						area: 'UI components',
+						choice: 'Design tokens plus unstyled accessible primitives (Radix, React Aria, Ark UI), styled your way',
+						why: 'Headless primitives handle the hard accessibility and keyboard behaviour while leaving every pixel to your brand. Tokens keep colours, spacing and type consistent across themes.',
+						read: CH.ui,
+					}
+				: {
+						area: 'UI components',
+						choice: 'A pre-styled component library (for example MUI, Mantine or Ant Design)',
+						why: 'You get a complete, consistent, accessible set of components on day one. The trade-off is that a distinctive look later means fighting the library\'s defaults.',
+						read: CH.ui,
+					},
+		);
+
+		let playbook = PLAYBOOKS.saas;
+		if (a.updates === 'high') playbook = PLAYBOOKS.realtime;
+		else if (localFirst) playbook = PLAYBOOKS.canvas;
+		else if (a.seo === 'critical') playbook = a.content === 'static' ? PLAYBOOKS.content : PLAYBOOKS.ecommerce;
+
+		return { recs, playbook };
+	}
+
+	function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) {
+		const node = document.createElement(tag);
+		if (cls) node.className = cls;
+		if (text) node.textContent = text;
+		return node;
+	}
+
+	function readAnswers(): Answers {
+		return Object.fromEntries(new FormData(form).entries()) as Answers;
+	}
+
+	function render() {
+		const answers = readAnswers();
+		const { recs, playbook } = recommend(answers);
+		results.replaceChildren();
+
+		for (const r of recs) {
+			const card = el('article', 'calc-card');
+			card.append(el('p', 'calc-area', r.area), el('p', 'calc-choice', r.choice), el('p', 'calc-why', r.why));
+			const link = el('a', 'calc-read', `Read: ${r.read[1]}`) as HTMLAnchorElement;
+			link.href = page(r.read[0]);
+			card.append(link);
+			results.append(card);
+		}
+
+		const pb = el('article', 'calc-card calc-playbook');
+		pb.append(el('p', 'calc-area', 'Closest playbook'));
+		const pbLink = el('a', 'calc-choice', playbook[1]) as HTMLAnchorElement;
+		pbLink.href = page(playbook[0]);
+		pb.append(pbLink, el('p', 'calc-why', 'A complete worked blueprint for a product like yours, including what to avoid.'));
+		results.append(pb);
+
+		const url = new URL(window.location.href);
+		url.search = new URLSearchParams(answers).toString();
+		history.replaceState(null, '', url);
+	}
+
+	// Restore answers from a shared link, e.g. ?seo=critical&content=static
+	const params = new URLSearchParams(window.location.search);
+	for (const [name, value] of params) {
+		const input = form.querySelector<HTMLInputElement>(`input[name="${CSS.escape(name)}"][value="${CSS.escape(value)}"]`);
+		if (input) input.checked = true;
+	}
+
+	form.addEventListener('change', render);
+	render();
+
+	const status = document.getElementById('copy-status') as HTMLSpanElement;
+	document.getElementById('copy-link')?.addEventListener('click', async () => {
+		try {
+			await navigator.clipboard.writeText(window.location.href);
+			status.textContent = 'Link copied.';
+		} catch {
+			status.textContent = 'Copy failed. Copy the address bar instead.';
+		}
+	});
+</script>
+
+<style>
+	.calc-form {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+		gap: 1rem;
+		margin-block: 1.5rem;
+	}
+	.calc-question {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.5rem;
+		padding: 0.75rem 1rem 1rem;
+		margin: 0;
+	}
+	.calc-question legend {
+		font-weight: 600;
+		color: var(--sl-color-white);
+		padding-inline: 0.25rem;
+	}
+	.calc-option {
+		display: flex;
+		gap: 0.5rem;
+		align-items: flex-start;
+		margin-top: 0.5rem;
+		font-size: var(--sl-text-sm);
+		cursor: pointer;
+	}
+	.calc-option input {
+		margin-top: 0.3rem;
+		accent-color: var(--sl-color-accent);
+	}
+	.calc-results {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+		gap: 1rem;
+	}
+	.calc-results :global(.calc-card) {
+		border: 1px solid var(--sl-color-gray-5);
+		border-left: 4px solid var(--sl-color-accent);
+		border-radius: 0.5rem;
+		padding: 1rem;
+		margin: 0;
+		background: var(--sl-color-gray-7, var(--sl-color-black));
+	}
+	.calc-results :global(.calc-playbook) {
+		border-left-color: #a855f7;
+	}
+	.calc-results :global(p) {
+		margin: 0;
+	}
+	.calc-results :global(.calc-area) {
+		font-size: var(--sl-text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--sl-color-gray-3);
+	}
+	.calc-results :global(.calc-choice) {
+		display: block;
+		font-weight: 700;
+		color: var(--sl-color-white);
+		margin-block: 0.25rem 0.5rem;
+	}
+	.calc-results :global(.calc-why) {
+		font-size: var(--sl-text-sm);
+	}
+	.calc-results :global(.calc-read) {
+		display: inline-block;
+		margin-top: 0.75rem;
+		font-size: var(--sl-text-sm);
+	}
+	.calc-actions {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+	.calc-button {
+		background: var(--sl-color-text-accent);
+		color: var(--sl-color-black);
+		border: 0;
+		border-radius: 0.4rem;
+		padding: 0.5rem 1rem;
+		font: inherit;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.calc-note {
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+</style>

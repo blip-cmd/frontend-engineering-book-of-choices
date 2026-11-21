@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Read the book online
+    url: https://blip-cmd.github.io/frontend-engineering-book-of-choices/
+    about: Check the latest published version before reporting.

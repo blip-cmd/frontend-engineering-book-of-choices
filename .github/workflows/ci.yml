@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Standards audit (no em dashes, no broken relative links)
+        run: python pipelines/scripts/audit_repo_standards.py
+
+      - name: Node CLI tests
+        run: npm test
+
+      - name: Python tests
+        run: python -m unittest discover -s tests -p "test_*.py"
+
+      - name: Website builds
+        working-directory: site
+        run: |
+          npm ci
+          npm run build

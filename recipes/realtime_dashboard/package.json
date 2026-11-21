@@ -1,0 +1,21 @@
+{
+  "name": "recipe-realtime-dashboard",
+  "version": "1.0.0",
+  "description": "Production configuration for High-Frequency Real-Time Telemetry and Dashboards based on the Book of Choices",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "solid-js": "^1.8.22",
+    "uplot": "^1.6.31"
+  },
+  "devDependencies": {
+    "terser": "^5.31.6",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.3",
+    "vite-plugin-solid": "^2.10.2"
+  }
+}
