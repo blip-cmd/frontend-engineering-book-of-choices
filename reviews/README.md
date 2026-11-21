@@ -10,3 +10,4 @@ Ledgers are written by the verification process in [CONTENT_STANDARDS.md](../CON
 | Appendix B: Core Web Vitals Production Triage Guide | agent-verified | 2026-11 | 2027-05 | [ledger](core-web-vitals-triage-guide.md) |
 | Appendix D: Zero-Downtime Migration Playbooks | agent-verified | 2026-11 | 2027-05 | [ledger](migration-playbooks.md) |
 | Essay: Why Server Caches Replace Most Redux Stores | agent-verified | 2026-11 | 2027-05 | [ledger](why-server-caches-replace-most-redux-stores.md) |
+| Chapter 3: State and Cache Topologies | agent-verified | 2026-11 | 2027-05 | [ledger](state-and-cache-topologies.md) |
