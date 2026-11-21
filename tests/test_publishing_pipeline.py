@@ -11,7 +11,7 @@ from datetime import date
 import zipfile
 
 from pipelines.scripts.build_epub_book import build_epub_book
-from pipelines.scripts.content_meta import split_front_matter
+from pipelines.scripts.content_meta import STATUSES, split_front_matter
 from pipelines.scripts.audit_repo_standards import audit_content_page
 from pipelines.scripts.build_typst_book import (
     CHAPTER_SEQUENCE,
@@ -85,11 +85,13 @@ class TestContentStandards(unittest.TestCase):
 
     PAGE = (
         "---\nstatus: {status}\nai_involvement: drafted\nlast_verified: {lv}\n"
-        "verified_against:\nreview_by: {rb}\nreviewers: {rv}\n---\n\n# Title\n\n{body}\n"
+        "verified_against:\nreview_by: {rb}\nreviewers: {rv}\nledger: {lg}\n---\n\n# Title\n\n{body}\n"
     )
 
-    def page(self, status="draft", lv="", rb="", rv="", body="Plain text."):
-        return self.PAGE.format(status=status, lv=lv, rb=rb, rv=rv, body=body)
+    LEDGER = "CONTENT_STANDARDS.md"  # any existing file stands in for a ledger
+
+    def page(self, status="draft", lv="", rb="", rv="", body="Plain text.", lg=""):
+        return self.PAGE.format(status=status, lv=lv, rb=rb, rv=rv, body=body, lg=lg)
 
     def test_front_matter_parsing(self):
         meta, body = split_front_matter(self.page(status="reviewed", rv="blip-cmd"))
@@ -104,7 +106,7 @@ class TestContentStandards(unittest.TestCase):
         self.assertGreaterEqual(len(pages), 20)
         for p in pages:
             meta, _ = split_front_matter(p.read_text(encoding="utf-8"))
-            self.assertIn(meta.get("status"), ("draft", "reviewed", "gold"), p.name)
+            self.assertIn(meta.get("status"), STATUSES, p.name)
 
     def test_builders_strip_front_matter(self):
         content = build_typst_document().read_text(encoding="utf-8")
@@ -116,7 +118,17 @@ class TestContentStandards(unittest.TestCase):
         errors, _ = audit_content_page(self.page(status="reviewed"), date(2026, 11, 21))
         self.assertTrue(any("reviewer" in e for e in errors))
         self.assertTrue(any("last_verified" in e for e in errors))
-        errors, _ = audit_content_page(self.page(status="reviewed", lv="2026-11", rb="2027-05", rv="blip-cmd"), date(2026, 11, 21))
+        errors, _ = audit_content_page(self.page(status="reviewed", lv="2026-11", rb="2027-05", rv="blip-cmd", lg=self.LEDGER), date(2026, 11, 21))
+        self.assertEqual(errors, [])
+
+    def test_agent_verified_page_needs_ledger_and_no_human_reviewers(self):
+        errors, _ = audit_content_page(self.page(status="agent-verified", lv="2026-11", rb="2027-05"), date(2026, 11, 21))
+        self.assertTrue(any("ledger" in e for e in errors))
+        errors, _ = audit_content_page(self.page(status="agent-verified", lv="2026-11", rb="2027-05", lg="reviews/missing.md"), date(2026, 11, 21))
+        self.assertTrue(any("not found" in e for e in errors))
+        errors, _ = audit_content_page(self.page(status="agent-verified", lv="2026-11", rb="2027-05", rv="blip-cmd", lg=self.LEDGER), date(2026, 11, 21))
+        self.assertTrue(any("humans only" in e for e in errors))
+        errors, _ = audit_content_page(self.page(status="agent-verified", lv="2026-11", rb="2027-05", lg=self.LEDGER), date(2026, 11, 21))
         self.assertEqual(errors, [])
 
     def test_unverified_marker_and_stale_facts_fail(self):
@@ -132,10 +144,10 @@ class TestContentStandards(unittest.TestCase):
         errors, warnings = audit_content_page(self.page(body=body), date(2026, 11, 21))
         self.assertEqual(errors, [])
         self.assertTrue(any("G1" in w for w in warnings))
-        errors, _ = audit_content_page(self.page(status="reviewed", lv="2026-11", rb="2027-05", rv="blip-cmd", body=body), date(2026, 11, 21))
+        errors, _ = audit_content_page(self.page(status="reviewed", lv="2026-11", rb="2027-05", rv="blip-cmd", body=body, lg=self.LEDGER), date(2026, 11, 21))
         self.assertTrue(any("G1" in e for e in errors))
         sourced = "Builds are 5x faster ([source](https://example.org/bench))."
-        errors, _ = audit_content_page(self.page(status="reviewed", lv="2026-11", rb="2027-05", rv="blip-cmd", body=sourced), date(2026, 11, 21))
+        errors, _ = audit_content_page(self.page(status="reviewed", lv="2026-11", rb="2027-05", rv="blip-cmd", body=sourced, lg=self.LEDGER), date(2026, 11, 21))
         self.assertEqual(errors, [])
 
 

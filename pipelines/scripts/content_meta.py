@@ -11,7 +11,8 @@ import re
 
 FENCE = re.compile(r"\A---\r?\n(.*?)\r?\n---\r?\n", re.S)
 
-STATUSES = ("draft", "reviewed", "gold")
+STATUSES = ("draft", "agent-verified", "reviewed", "gold")
+VERIFIED_STATUSES = ("agent-verified", "reviewed", "gold")
 AI_INVOLVEMENT = ("drafted", "assisted", "none")
 REQUIRED_KEYS = ("status", "ai_involvement", "last_verified", "verified_against", "review_by", "reviewers")
 

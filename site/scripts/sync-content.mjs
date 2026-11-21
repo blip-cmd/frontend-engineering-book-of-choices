@@ -107,6 +107,18 @@ function reviewBanner(meta, src) {
       ':::',
     ].join('\n');
   }
+  const ledgerLink = meta.ledger ? `[claim ledger](${REPO_URL}/blob/${BRANCH}/${meta.ledger})` : 'claim ledger';
+  if (meta.status === 'agent-verified') {
+    return [
+      ':::tip[Verified by AI agents]',
+      `Every claim on this page was checked against official documentation and primary sources by AI agents, following the [content standards](${STANDARDS_URL}). The ${ledgerLink} lists each claim and its source, plus an independent second check.` +
+        (meta.last_verified ? ` Last verified ${meta.last_verified}` : '') +
+        (meta.verified_against ? ` against ${meta.verified_against}.` : meta.last_verified ? '.' : '') +
+        (meta.review_by ? ` Next check due ${meta.review_by}.` : '') +
+        ` It has not yet been reviewed by a human expert. [Report an error](${issue}).`,
+      ':::',
+    ].join('\n');
+  }
   const who = (meta.reviewers || '').split(',').map((r) => r.trim()).filter(Boolean)
     .map((r) => `[${r}](https://github.com/${r})`).join(', ');
   const ai = meta.ai_involvement === 'drafted' ? 'Drafted with AI assistance, then reviewed'
