@@ -1,10 +1,11 @@
 ---
-status: draft
+status: agent-verified
 ai_involvement: drafted
-last_verified:
-verified_against:
-review_by:
+last_verified: 2026-11
+verified_against: OWASP Cheat Sheets, MDN and web.dev as of 2026-11; React 19, Next.js docs (2026-08), Vite 8.3, DOMPurify 3.4
+review_by: 2027-05
 reviewers:
+ledger: reviews/appendix-c-frontend-security-checklist.md
 ---
 
 # Appendix C: Production Frontend Security Hardening Checklist
@@ -39,7 +40,7 @@ reviewers:
   Clear-Site-Data: "cache", "cookies", "storage"
   ```
 
-  * `"storage"` clears localStorage, sessionStorage and IndexedDB, and unregisters service workers (MDN). MDN marks the header Baseline widely available, "available across browsers since September 2023", and it only works over HTTPS.
+  * `"storage"` clears localStorage, sessionStorage and IndexedDB, and unregisters service workers (MDN). MDN marks the header Baseline widely available, "available across browsers since September 2023", and it is available only in secure contexts (HTTPS) "in some or all supporting browsers".
   * **Caution:** `"cookies"` "affects the entire registered domain, including subdomains" (MDN), so it can also sign users out of sibling apps on other subdomains. Drop that directive if your subdomains share a registered domain but not a session.
   * MDN's description of `"storage"` does not list the Cache API. Do not put responses containing sensitive data into the Cache API in the first place ([OWASP HTML5 Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html)).
 
@@ -123,7 +124,7 @@ reviewers:
 
 * [ ] **Scan dependencies on every pull request.** Run a vulnerability scanner in CI (for example `npm audit`, GitHub Dependabot, Socket or Snyk) and commit your lockfile so every install resolves the same versions.
 
-* [ ] **Check that a package is real before installing it, especially if an AI tool suggested it.** Code models invent package names (at least 5.2% of suggestions from commercial models and 21.7% from open models in one study), and attackers register those names ([Spracklen et al., USENIX Security 2025](https://arxiv.org/abs/2406.10279v3)). Confirm the name, owner and download history with `npm view <name>` or on npmjs.com.
+* [ ] **Check that a package is real before installing it, especially if an AI tool suggested it.** Code models invent package names (at least 5.2% of suggestions from commercial models and 21.7% from open models in one study), and attackers can register those names to publish malware under them ([Spracklen et al., USENIX Security 2025](https://arxiv.org/abs/2406.10279v3)). Confirm the name, owner and download history with `npm view <name>` or on npmjs.com.
 
 * [ ] **Pin CDN scripts with Subresource Integrity (SRI).** Add an `integrity` hash (`sha256`, `sha384` or `sha512`) to any script or stylesheet loaded from another origin, plus `crossorigin="anonymous"`: cross-origin SRI requires CORS, and a `no-cors` request with an integrity check "will always fail" ([MDN: Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity)).
 
@@ -134,6 +135,6 @@ reviewers:
   ```
 
 * [ ] **Assume every third-party script can read the whole page.** Analytics, tag managers and chat widgets run with your page's privileges, including access to form fields.
-  * **Partytown is not a security boundary.** It moves third-party scripts into a web worker for performance, but by design it "allows code executed from the web worker to access DOM synchronously", forwarding calls to the main thread through JavaScript proxies ([Partytown: How does it work?](https://partytown.qwik.dev/how-does-partytown-work)). Its sandboxing options let you restrict which APIs a script may call ([Partytown: Sandboxing](https://partytown.qwik.dev/sandboxing)), but the documentation makes no security guarantee.
+  * **Partytown is not a security boundary.** It moves third-party scripts into a web worker for performance, but by design it "allows code executed from the web worker to access DOM synchronously", forwarding calls to the main thread through JavaScript proxies ([Partytown: How does it work?](https://partytown.qwik.dev/how-does-partytown-work)). Its [Sandboxing page](https://partytown.qwik.dev/sandboxing) describes allowing or denying scripts access to main-thread APIs, but the [configuration reference](https://partytown.qwik.dev/configuration/) documents no option for it. Treat that control as unavailable, and Partytown as a performance tool only.
   * **Our recommendation:** load as few third-party scripts as possible, keep them off sensitive pages (sign-in, payment, account settings), and let your CSP define where scripts may come from.
   * For untrusted embedded content, use an `<iframe>` with the `sandbox` attribute, served from a different origin. MDN warns that combining `allow-scripts` and `allow-same-origin` for same-origin content lets the embedded document remove the sandbox, "making it no more secure than not using the sandbox attribute at all" ([MDN: iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe)).
