@@ -74,6 +74,7 @@ jobs:
           echo "today=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
 
       - name: Author pass
+        id: author
         if: steps.pick.outputs.page != ''
         uses: anthropics/claude-code-action@v1
         with:
@@ -91,6 +92,7 @@ jobs:
             --allowedTools "${{ env.ALLOWED_TOOLS }}"
 
       - name: Independent verifier pass
+        id: verifier
         if: steps.pick.outputs.page != ''
         uses: anthropics/claude-code-action@v1
         with:
@@ -105,6 +107,21 @@ jobs:
             --model ${{ env.MODEL }}
             --max-turns 80
             --allowedTools "${{ env.ALLOWED_TOOLS }}"
+
+      - name: Show the agent's error, if any
+        # Prints only result and error lines, never the full transcript: this repository's logs are public.
+        if: failure() && steps.pick.outputs.page != ''
+        env:
+          AUTHOR_FILE: ${{ steps.author.outputs.execution_file }}
+          VERIFIER_FILE: ${{ steps.verifier.outputs.execution_file }}
+          FALLBACK_FILE: ${{ runner.temp }}/claude-execution-output.json
+        run: |
+          for f in "$AUTHOR_FILE" "$VERIFIER_FILE" "$FALLBACK_FILE"; do
+            [ -n "$f" ] && [ -f "$f" ] || continue
+            echo "== $f"
+            jq -r '.[] | select(.type == "result") | "result: \(.subtype) is_error=\(.is_error) turns=\(.num_turns) \(.result // "")"' "$f" | cut -c1-600
+            jq -r '.[] | select(.type == "assistant") | .message.content[]? | select(.type == "text") | .text' "$f" | tail -n 3 | cut -c1-600
+          done
 
       - name: Only the page and its review files may change
         if: steps.pick.outputs.page != ''
