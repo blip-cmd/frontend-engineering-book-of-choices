@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2026 blip-cmd and contributors
 const { test, describe } = require('node:test');
 const assert = require('node:assert');
 const fs = require('node:fs');

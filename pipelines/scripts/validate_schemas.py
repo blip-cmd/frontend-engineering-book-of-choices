@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 blip-cmd and contributors
 """
 Schema Validation Script
 Validates structured decision item files against pipelines/schemas/decision_item_schema.json

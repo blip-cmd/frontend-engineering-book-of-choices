@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2026 blip-cmd and contributors
 
 /**
  * Frontend Engineering as a Book of Choices - CLI Decision Engine
@@ -413,6 +415,8 @@ async function main() {
     console.log(`
 @blip-cmd/choices v${PKG_VERSION}
 Frontend Engineering as a Book of Choices: Decision Engine and Scaffolding CLI
+License: AGPL-3.0-only (starter recipes: MIT). No warranty.
+Source:  https://github.com/blip-cmd/frontend-engineering-book-of-choices
 
 USAGE:
   npx @blip-cmd/choices [command] [options]

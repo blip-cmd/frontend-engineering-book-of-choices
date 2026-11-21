@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Chapter 4: The Networking Contract: REST vs. GraphQL vs. tRPC vs. Server Actions
 
 > The boundary between client and server is the most volatile interface in software. How you structure that contract dictates your type safety, network latency, and deployment coupling.

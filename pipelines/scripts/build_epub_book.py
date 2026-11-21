@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 blip-cmd and contributors
 """
 Mobile-Optimized EPUB3 Generation Pipeline
 Compiles all markdown chapters, playbooks, and appendices into a compliant
@@ -8,6 +10,10 @@ import html
 from pathlib import Path
 import re
 import sys
+try:
+    from pipelines.scripts.content_meta import strip_front_matter
+except ImportError:  # run directly as a script
+    from content_meta import strip_front_matter
 import uuid
 import zipfile
 
@@ -281,7 +287,7 @@ def build_epub_book():
                 print(f"[WARNING] Chapter file not found: {cpath}", file=sys.stderr)
                 continue
             with open(cpath, "r", encoding="utf-8") as f:
-                md_content = f.read()
+                md_content = strip_front_matter(f.read())
 
             xhtml_content = md_to_xhtml(md_content, ctitle)
             # Verify zero em dashes

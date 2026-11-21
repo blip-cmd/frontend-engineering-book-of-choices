@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 blip-cmd and contributors
 """
 Automated Test Suite for Publishing & Compilation Pipelines
 Verifies Typst e-book compilation, EPUB3 packaging, and zero em-dash validation.
@@ -5,9 +7,12 @@ Verifies Typst e-book compilation, EPUB3 packaging, and zero em-dash validation.
 
 from pathlib import Path
 import unittest
+from datetime import date
 import zipfile
 
 from pipelines.scripts.build_epub_book import build_epub_book
+from pipelines.scripts.content_meta import split_front_matter
+from pipelines.scripts.audit_repo_standards import audit_content_page
 from pipelines.scripts.build_typst_book import (
     CHAPTER_SEQUENCE,
     build_typst_document,
@@ -74,6 +79,65 @@ class TestPublishingPipeline(unittest.TestCase):
             content = f.read()
         self.assertIn("Compile and Release Book Assets", content)
         self.assertIn("typst-community/setup-typst", content)
+
+class TestContentStandards(unittest.TestCase):
+    """Automatable parts of CONTENT_STANDARDS.md."""
+
+    PAGE = (
+        "---\nstatus: {status}\nai_involvement: drafted\nlast_verified: {lv}\n"
+        "verified_against:\nreview_by: {rb}\nreviewers: {rv}\n---\n\n# Title\n\n{body}\n"
+    )
+
+    def page(self, status="draft", lv="", rb="", rv="", body="Plain text."):
+        return self.PAGE.format(status=status, lv=lv, rb=rb, rv=rv, body=body)
+
+    def test_front_matter_parsing(self):
+        meta, body = split_front_matter(self.page(status="reviewed", rv="blip-cmd"))
+        self.assertEqual(meta["status"], "reviewed")
+        self.assertEqual(meta["reviewers"], "blip-cmd")
+        self.assertTrue(body.lstrip().startswith("# Title"))
+        self.assertEqual(split_front_matter("# No front matter\n"), ({}, "# No front matter\n"))
+
+    def test_every_book_page_has_valid_front_matter(self):
+        pages = [p for p in (REPO_ROOT / "book").rglob("*.md") if p.name != "README.md" and "dist" not in p.parts]
+        pages += list((REPO_ROOT / "docs" / "essays").glob("*.md"))
+        self.assertGreaterEqual(len(pages), 20)
+        for p in pages:
+            meta, _ = split_front_matter(p.read_text(encoding="utf-8"))
+            self.assertIn(meta.get("status"), ("draft", "reviewed", "gold"), p.name)
+
+    def test_builders_strip_front_matter(self):
+        content = build_typst_document().read_text(encoding="utf-8")
+        self.assertNotIn("ai_involvement", content)
+        with zipfile.ZipFile(build_epub_book(), "r") as zf:
+            self.assertNotIn("ai_involvement", zf.read("OEBPS/ch00.xhtml").decode("utf-8"))
+
+    def test_reviewed_page_requires_human_reviewer_and_dates(self):
+        errors, _ = audit_content_page(self.page(status="reviewed"), date(2026, 11, 21))
+        self.assertTrue(any("reviewer" in e for e in errors))
+        self.assertTrue(any("last_verified" in e for e in errors))
+        errors, _ = audit_content_page(self.page(status="reviewed", lv="2026-11", rb="2027-05", rv="blip-cmd"), date(2026, 11, 21))
+        self.assertEqual(errors, [])
+
+    def test_unverified_marker_and_stale_facts_fail(self):
+        errors, _ = audit_content_page(self.page(body="<!-- UNVERIFIED: no source -->"), date(2026, 11, 21))
+        self.assertTrue(any("UNVERIFIED" in e for e in errors))
+        errors, _ = audit_content_page(self.page(body="FID is a Core Web Vital."), date(2026, 11, 21))
+        self.assertTrue(any("fid-core-web-vital" in e for e in errors))
+        errors, _ = audit_content_page(self.page(body="INP replaced FID in March 2024."), date(2026, 11, 21))
+        self.assertEqual(errors, [])
+
+    def test_unsourced_numbers_warn_on_drafts_and_fail_on_reviewed_pages(self):
+        body = "Builds are 5x faster."
+        errors, warnings = audit_content_page(self.page(body=body), date(2026, 11, 21))
+        self.assertEqual(errors, [])
+        self.assertTrue(any("G1" in w for w in warnings))
+        errors, _ = audit_content_page(self.page(status="reviewed", lv="2026-11", rb="2027-05", rv="blip-cmd", body=body), date(2026, 11, 21))
+        self.assertTrue(any("G1" in e for e in errors))
+        sourced = "Builds are 5x faster ([source](https://example.org/bench))."
+        errors, _ = audit_content_page(self.page(status="reviewed", lv="2026-11", rb="2027-05", rv="blip-cmd", body=sourced), date(2026, 11, 21))
+        self.assertEqual(errors, [])
+
 
 if __name__ == "__main__":
     unittest.main()

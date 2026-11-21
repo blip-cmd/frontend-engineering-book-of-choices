@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Chapter 8: Local-First and Offline Resilience: CRDTs and Client Databases
 
 > What if the network is just an asynchronous background worker, and your client device is the real database?

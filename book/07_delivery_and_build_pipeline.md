@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Chapter 7: Delivery & Build Pipeline: Bundlers, Streaming, and Core Web Vitals
 
 > The finest architecture fails if the delivery pipeline ships a bloated, unoptimized payload that stalls on the user's network.

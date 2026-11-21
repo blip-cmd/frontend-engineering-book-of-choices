@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # The 14 KB TCP Slow-Start Budget: Why Your First HTML Packet Decides Your LCP
 
 > A deep dive into the physics of computer networks, TCP congestion windows, and why keeping initial HTML documents below 14 kilobytes is the single highest-ROI performance optimization in modern web engineering.

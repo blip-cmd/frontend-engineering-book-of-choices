@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Chapter 5: Design Engineering & UI Architecture: Tokens, Primitives, and Performance
 
 > Design engineering is the discipline of translating aesthetic intent into accessible, performant, and resilient code.

@@ -19,11 +19,15 @@ The book's text lives in `book/`, `docs/essays/` and `library/`. The website is 
 
 ### Writing Standards
 
-* **Cite your sources.** Link claims to official documentation, specifications, or primary sources (benchmarks, RFCs, release notes). Unsourced numbers will be questioned in review.
+Every page is reviewed against [CONTENT_STANDARDS.md](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/CONTENT_STANDARDS.md): ten pass/fail gates and ten scored dimensions. The essentials:
+
+* **Cite your sources.** Every number links to its source; every link must actually support the claim. Prefer official docs, specifications, changelogs and primary data.
 * **Write in your own words.** Do not paste text from other books, courses, or paid articles. Short quotes with attribution are fine.
-* **Show the trade-off.** Every recommendation should say what it costs and when it is the wrong choice.
-* **No em dashes.** Use a colon, comma, or parentheses instead. The automated audit (`npm run audit`) checks this.
-* **AI tools.** You may use them, but you are responsible for verifying every claim and every line of code you submit.
+* **Show the trade-off.** Every recommendation says what it costs and when it is the wrong choice.
+* **Pin and date.** Name versions ("React 19+") and cite browser support by its Baseline status.
+* **Real experience only.** Experience reports are welcome and credited to you; never present invented experience.
+* **AI tools** are allowed if you disclose them in the pull request and have checked every claim and line of code yourself. AI agents must follow [AGENTS.md](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/AGENTS.md).
+* **No em dashes.** Use a colon, comma, or parentheses instead. `npm run audit` checks this and the automatable gates.
 
 ---
 
@@ -43,9 +47,23 @@ npm run audit
 
 ---
 
-## Licensing of Contributions
+## Licensing and the Contributor License Agreement
 
-* Writing (`book/`, `docs/`, `library/`, and site page text) is licensed under [CC BY-NC-ND 4.0](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/LICENSE-CONTENT.md).
-* Code (the calculator, CLI, recipes, scripts, and site code) is licensed under the [MIT License](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/LICENSE).
+The project uses three licenses:
 
-By submitting a contribution, you confirm that you have the right to submit it, and you agree that it is licensed under the license that applies to the files you changed. Because the writing license does not allow modified copies, you also grant the maintainer a perpetual, worldwide, non-exclusive, royalty-free right to edit, adapt, and redistribute your contribution as part of this project. You will be credited in the project's contributor history.
+| Part | License | Why |
+| :--- | :--- | :--- |
+| Writing: `book/`, `docs/`, `library/`, and the website's page text | [CC BY-NC-ND 4.0](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/LICENSE-CONTENT.md) | Free to read and share; improvements come back here instead of into competing copies |
+| Code: the calculator, CLI, website, pipelines and tests | [GNU AGPL-3.0](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/LICENSE) | Anyone who runs a modified version, including as a website, must publish their source |
+| Starter recipes: `recipes/` | [MIT](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/recipes/LICENSE) | Copy them freely into your own projects |
+
+**Before your first pull request can be merged, you sign the [Contributor License Agreement](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/CLA.md) (CLA).** A bot comments on your pull request with a link; signing takes one click with your GitHub account and covers all your future contributions.
+
+In short, the CLA says that:
+
+* you keep the copyright in your work;
+* the work is yours to give;
+* you have checked anything you made with AI help;
+* the maintainer may edit and relicense it as part of the project, and promises to keep it publicly available under the license it was contributed under.
+
+Please read the full text before signing. It is short. You are credited in the project's history for every accepted contribution.

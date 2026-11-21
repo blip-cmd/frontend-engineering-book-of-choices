@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Decision Playbook: Low-Latency Global E-Commerce Storefronts
 
 > Recommended Architecture for: Direct-to-Consumer (DTC) Brands, Global Retail Storefronts, and High-Conversion Marketplaces.

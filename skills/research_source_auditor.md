@@ -1,5 +1,7 @@
 # Skill: Research Source Auditor
 
+> **Binding rules first.** This prompt predates the project's content standards. Where it conflicts with [`AGENTS.md`](../AGENTS.md) or [`CONTENT_STANDARDS.md`](../CONTENT_STANDARDS.md), those files win. In particular: verify every claim against a primary source in the same session, never invent numbers, citations, packages or experience, and never mark your own work as reviewed.
+
 ## Mission
 Audit incoming literature, engineering whitepapers, framework documentation, and production post-mortems into standardized decision intelligence.
 

@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Appendix B: Core Web Vitals Production Triage Guide
 
 > An actionable diagnostic and remediation protocol for resolving failing Google Core Web Vitals (LCP, INP, CLS) in production environments.

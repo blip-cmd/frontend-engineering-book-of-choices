@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Appendix D: Zero-Downtime Migration Playbooks
 
 > How to modernize legacy frontend architectures incrementally without risking catastrophic multi-month total rewrites.

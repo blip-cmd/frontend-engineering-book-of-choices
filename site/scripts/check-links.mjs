@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2026 blip-cmd and contributors
 // Fails the build if any page links to a path on this site that was not built.
 import fs from 'node:fs';
 import path from 'node:path';

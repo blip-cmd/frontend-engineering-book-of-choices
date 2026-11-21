@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2026 blip-cmd and contributors
 // Renders the default social preview image (public/og/default.png, 1200x630).
 // Run manually after changing the design: node scripts/make-og.mjs
 import sharp from 'sharp';

@@ -1,5 +1,7 @@
 # Skill: Book Chapter Drafter
 
+> **Binding rules first.** This prompt predates the project's content standards. Where it conflicts with [`AGENTS.md`](../AGENTS.md) or [`CONTENT_STANDARDS.md`](../CONTENT_STANDARDS.md), those files win. In particular: verify every claim against a primary source in the same session, never invent numbers, citations, packages or experience, and never mark your own work as reviewed.
+
 ## Mission
 Draft clear, engaging, and high-density chapters for *Frontend Engineering as a Book of Choices*.
 

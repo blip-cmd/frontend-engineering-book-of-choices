@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 blip-cmd and contributors
 """
 Social Comparison Card Generator
 Generates high-contrast 1200x630 vector SVG cards summarizing key architectural

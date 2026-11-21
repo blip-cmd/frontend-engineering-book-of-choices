@@ -9,35 +9,34 @@
 * [x] Website on GitHub Pages (Astro Starlight): one page per chapter, search, sitemap, social previews, "Edit page" links
 * [x] Architecture calculator rebuilt with reasoning, chapter links, and shareable URLs
 * [x] Removed summaries of third-party books; added an original [further-reading list](library/reading_list.md)
-* [x] Licenses: CC BY-NC-ND 4.0 for writing, MIT for code
+* [x] Licenses: CC BY-NC-ND 4.0 for writing, AGPL-3.0 for code, MIT for starter recipes; Contributor License Agreement
 * [x] Contribution guide, issue templates, and CI (tests, standards audit, site build)
 
 ---
 
-## Phase 2: Quality Pass on Every Chapter (Open, help wanted)
+## Phase 2: Quality Pass on Every Page (In progress, help wanted)
 
-The first draft was written with AI assistance. Each page needs a human review before it can be called reliable. For every chapter and appendix:
+Every page is reviewed against [CONTENT_STANDARDS.md](CONTENT_STANDARDS.md): ten pass/fail gates (sourced numbers, working code, no invented packages or experience, a named human reviewer...) and ten scored dimensions. Each page's status lives in its front matter (`status: draft | reviewed | gold`) and is shown on the website. Run `npm run audit` to see the current count.
 
-1. Link every factual claim to an official doc, specification, or primary source.
-2. Check every library is current and not deprecated (one fix so far: Recoil, archived in early 2025, was removed from Chapter 3).
-3. Replace or source unsupported numbers (bundle sizes, "80% to 90%" style claims, latency figures).
-4. Add at least one small, runnable code example per major choice.
-5. Add a "When this is the wrong choice" section if it is missing.
+Review order (highest risk first, because readers copy examples and act on numbers):
 
-| Page | Reviewed | Sourced | Code examples |
-| :--- | :---: | :---: | :---: |
-| Chapter 0: The Calculus of Choices | [ ] | [ ] | n/a |
-| Chapter 1: Where Code Runs | [ ] | [ ] | [ ] |
-| Chapter 2: The Reactivity Dilemma | [ ] | [ ] | [ ] |
-| Chapter 3: State and Cache Topologies | [ ] | [ ] | [ ] |
-| Chapter 4: The Networking Contract | [ ] | [ ] | [ ] |
-| Chapter 5: Design Engineering and UI | [ ] | [ ] | [ ] |
-| Chapter 6: Styling and Presentation | [ ] | [ ] | [ ] |
-| Chapter 7: Delivery and Build Pipeline | [ ] | [ ] | [ ] |
-| Chapter 8: Local-First and Offline | [ ] | [ ] | [ ] |
-| Playbooks (5) | [ ] | [ ] | [ ] |
-| Appendices (4) | [ ] | [ ] | [ ] |
-| Essays (2) | [ ] | [ ] | [ ] |
+1. [ ] Appendix C: Frontend Security Hardening Checklist
+2. [ ] Appendix B: Core Web Vitals Triage Guide
+3. [ ] Appendix D: Migration Playbooks
+4. [ ] Chapter 3: State and Cache Topologies, and the essay "Why Server Caches Replace Most Redux Stores"
+5. [ ] Essay: The 14 KB TCP Slow-Start Budget, and Chapter 7: Delivery and Build Pipeline
+6. [ ] Decision playbooks (5)
+7. [ ] Chapters 0, 1, 2, 4, 5, 6, 8 and Appendix A
+
+Known issues across the draft: unsourced percentages and multipliers, no verification dates, and generic headings ("The Landscape of Choices") repeated across chapters.
+
+### Content-standards tooling
+
+* [x] Page status front matter, shown on the website
+* [x] Audit: front matter, `UNVERIFIED` markers, stale facts, unsourced numbers (warning on drafts, error on reviewed pages)
+* [ ] External link checker
+* [ ] Code-block extraction and type-check
+* [ ] `npm view` existence check for packages named in code
 
 ---
 

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 blip-cmd and contributors
 """
 Frontend Engineering Choice Engine CLI
 An interactive architectural decision engine mapping project constraints

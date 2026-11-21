@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Chapter 6: Styling and Presentation: The CSS Architecture Dilemma
 
 > CSS is easy to write, difficult to maintain, and lethal to runtime performance when misapplied to modern rendering models.

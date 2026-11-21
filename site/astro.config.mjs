@@ -1,4 +1,6 @@
 // @ts-check
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2026 blip-cmd and contributors
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { sync } from './scripts/sync-content.mjs';

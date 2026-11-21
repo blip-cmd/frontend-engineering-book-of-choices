@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 blip-cmd and contributors
 """
 Automated Matrix and Library Index Compiler
 Scans all markdown files in library/ and compiles a master index table and category summary.

@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Decision Playbook: High-Frequency Real-Time Telemetry & Financial Dashboards
 
 > Recommended Architecture for: Financial Trading Consoles, IoT Telemetry Hubs, Server Health Monitoring, and Live Analytics Streaming.

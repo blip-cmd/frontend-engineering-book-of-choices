@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 blip-cmd and contributors
 """
 Target Sources Ingestion and Library Scaffold Generator
 Reads target_sources.json and ensures structured audit stubs exist in library/

@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Decision Playbook: Collaborative Canvas & Document Workspaces
 
 > Recommended Architecture for: Whiteboards (Miro style), Design Tools (Figma style), Diagramming Studios, and Real-Time Collaborative Document Editors.

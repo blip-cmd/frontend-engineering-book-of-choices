@@ -1,0 +1,20 @@
+[
+  {
+    "id": "fid-core-web-vital",
+    "pattern": "\\b(FID|First Input Delay)\\b",
+    "unless": "(?i)(replac|deprecat|retir|former|no longer|INP)",
+    "message": "FID is no longer a Core Web Vital: INP replaced it in March 2024 (https://web.dev/blog/inp-cwv-launch)."
+  },
+  {
+    "id": "create-react-app",
+    "pattern": "(?i)(create-react-app|create react app|\\bCRA\\b)",
+    "unless": "(?i)(deprecat|sunset|no longer|migrat|instead of)",
+    "message": "Create React App was deprecated for new apps in February 2025 (https://react.dev/blog/2025/02/14/sunsetting-create-react-app)."
+  },
+  {
+    "id": "recoil",
+    "pattern": "(?i)\\brecoil\\b",
+    "unless": "(?i)(archiv|deprecat|unmaintained|no longer)",
+    "message": "Recoil was archived in January 2025 (https://github.com/facebookexperimental/Recoil). Mention it only as archived."
+  }
+]

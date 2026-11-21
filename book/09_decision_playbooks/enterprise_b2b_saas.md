@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Decision Playbook: Enterprise B2B SaaS & Data Grids
 
 > Recommended Architecture for: Internal Admin Portals, Enterprise Dashboards, Billing & CRM Platforms, and Complex Multi-Tenant Workspaces.

@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Decision Playbook: Content-First Publishing & Documentation
 
 > Recommended Architecture for: Documentation Hubs, Tech Blogs, Marketing Sites, News Portals, and Catalog Storefronts.

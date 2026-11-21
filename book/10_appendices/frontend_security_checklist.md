@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Appendix C: Production Frontend Security Hardening Checklist
 
 > A comprehensive pre-flight verification checklist for securing client applications against XSS, token exfiltration, CSRF, and supply-chain attacks.

@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Chapter 1: Where Code Runs: The Execution Boundary
 
 > Every frontend system begins with a geographic decision: on whose machine, at what distance, and at what cost does the code execute?

@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Chapter 3: State and Cache Topologies: Client State Stores vs. Remote Server Caches
 
 > Most bugs in modern frontend applications do not stem from rendering logic; they stem from attempting to manage remote, asynchronous network data as if it were local synchronous memory.

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 blip-cmd and contributors
 """
 Typst E-Book Assembler and Compilation Pipeline
 Compiles all chapters, archetype playbooks, and production appendices
@@ -9,6 +11,10 @@ import re
 import shutil
 import subprocess
 import sys
+try:
+    from pipelines.scripts.content_meta import strip_front_matter
+except ImportError:  # run directly as a script
+    from content_meta import strip_front_matter
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 BOOK_DIR = REPO_ROOT / "book"
@@ -249,7 +255,7 @@ def build_typst_document():
             print(f"[WARNING] Chapter path not found: {chap_path}", file=sys.stderr)
             continue
         with open(chap_path, "r", encoding="utf-8") as f:
-            content = f.read()
+            content = strip_front_matter(f.read())
         converted = convert_markdown_to_typst(content)
         typst_body.append(converted)
 

@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Chapter 2: The Reactivity Dilemma: Virtual DOM vs. Signals vs. Compilers
 
 > How does a change in memory manifest as a pixel update on screen? The answer to this question defines your application's runtime performance and memory profile.

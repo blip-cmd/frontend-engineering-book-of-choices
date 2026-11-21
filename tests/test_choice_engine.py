@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 blip-cmd and contributors
 """
 Automated Test Suite for Frontend Engineering Choice Engine and Pipelines
 Verifies recommendation matrix logic, schema validation, catalog compilation,

@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Appendix A: The 15 Deadly Frontend Architectural Anti-Patterns
 
 > The quickest way to build a high-performance frontend system is to systematically eliminate known architectural failure modes.

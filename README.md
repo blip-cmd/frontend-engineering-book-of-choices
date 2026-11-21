@@ -91,6 +91,9 @@ npm run audit
 ## License
 
 * **Writing** (everything in `book/`, `docs/`, `library/`, and the website's page text) is licensed under [Creative Commons BY-NC-ND 4.0](LICENSE-CONTENT.md). You may read it, share it, and quote it with credit. You may not sell it or publish modified versions. To improve it, contribute here.
-* **Code** (the calculator, CLI, recipes, scripts, and site code) is licensed under the [MIT License](LICENSE), so you can use the recipes and tools in your own projects.
+* **Code** (the calculator, CLI, website, pipelines and tests) is licensed under the [GNU AGPL-3.0](LICENSE). You may use, study and modify it, but if you distribute it or run a modified version as a website or service, you must publish your source under the same license.
+* **Starter recipes** (`recipes/`) are licensed under the [MIT License](recipes/LICENSE), so you can copy them freely into your own projects.
+
+Contributions require signing the [Contributor License Agreement](CLA.md); see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Copyright (c) 2026 blip-cmd and contributors.

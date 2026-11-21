@@ -23,12 +23,13 @@
     "recipes"
   ],
   "author": "blip-cmd",
-  "license": "MIT",
+  "license": "(AGPL-3.0-only AND MIT)",
   "files": [
     "bin/",
     "recipes/",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "recipes/LICENSE"
   ],
   "engines": {
     "node": ">=18.0.0"

@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Why Server Caches Replace Most Redux Stores
 
 > An architectural analysis on why conflating remote asynchronous server state with local synchronous UI state created a decade of unnecessary frontend complexity.

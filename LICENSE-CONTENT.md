@@ -9,7 +9,7 @@ This covers:
 * everything in `book/`, `docs/` and `library/`;
 * the text of the pages published at [blip-cmd.github.io/frontend-engineering-book-of-choices](https://blip-cmd.github.io/frontend-engineering-book-of-choices/).
 
-Source code in this repository is licensed separately under the [MIT License](LICENSE).
+Source code in this repository is licensed separately: the [GNU AGPL-3.0](LICENSE) for the calculator, CLI, website and tooling, and the [MIT License](recipes/LICENSE) for the starter recipes in `recipes/`.
 
 ---
 

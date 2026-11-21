@@ -1,3 +1,12 @@
+---
+status: draft
+ai_involvement: drafted
+last_verified:
+verified_against:
+review_by:
+reviewers:
+---
+
 # Chapter 0: The Calculus of Choices
 
 > "Architecture is the decisions that you wish you could get right early in a project, but that are not necessarily easy to change later."
