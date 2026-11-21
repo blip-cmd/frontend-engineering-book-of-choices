@@ -31,6 +31,12 @@ Every page is reviewed against [CONTENT_STANDARDS.md](https://github.com/blip-cm
 
 ---
 
+## Commits and Pull Requests
+
+See [docs/WORKFLOW.md](https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/docs/WORKFLOW.md): commit messages use `type(scope): summary` (for example `fix(chapter-3): correct TanStack Query version`), one concern per pull request, squash merge. CI checks the format.
+
+---
+
 ## Running the Project Locally
 
 ```bash

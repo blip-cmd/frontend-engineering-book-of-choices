@@ -16,11 +16,11 @@
 
 ## Phase 2: Quality Pass on Every Page (In progress, help wanted)
 
-Every page is reviewed against [CONTENT_STANDARDS.md](CONTENT_STANDARDS.md): ten pass/fail gates (sourced numbers, working code, no invented packages or experience, a named human reviewer...) and ten scored dimensions. Each page's status lives in its front matter (`status: draft | reviewed | gold`) and is shown on the website. Run `npm run audit` to see the current count.
+Every page is verified against [CONTENT_STANDARDS.md](CONTENT_STANDARDS.md), one per week, by the automated [Agent Verification Protocol](docs/WORKFLOW.md#2-the-agent-verification-protocol). Human expert review (`reviewed`, `gold`) is welcome on any page: ten pass/fail gates (sourced numbers, working code, no invented packages or experience, a named human reviewer...) and ten scored dimensions. Each page's status lives in its front matter (`status: draft | reviewed | gold`) and is shown on the website. Run `npm run audit` to see the current count.
 
 Review order (highest risk first, because readers copy examples and act on numbers):
 
-1. [ ] Appendix C: Frontend Security Hardening Checklist
+1. [x] Appendix C: Frontend Security Hardening Checklist (agent-verified 2026-11; [ledger](reviews/appendix-c-frontend-security-checklist.md))
 2. [ ] Appendix B: Core Web Vitals Triage Guide
 3. [ ] Appendix D: Migration Playbooks
 4. [ ] Chapter 3: State and Cache Topologies, and the essay "Why Server Caches Replace Most Redux Stores"
@@ -34,7 +34,8 @@ Known issues across the draft: unsourced percentages and multipliers, no verific
 
 * [x] Page status front matter, shown on the website
 * [x] Audit: front matter, `UNVERIFIED` markers, stale facts, unsourced numbers (warning on drafts, error on reviewed pages)
-* [ ] External link checker
+* [x] External link checker, library version watch and overdue-review check (weekly freshness report)
+* [x] Weekly automated agent verification with an independent verifier pass
 * [ ] Code-block extraction and type-check
 * [ ] `npm view` existence check for packages named in code
 

@@ -34,21 +34,23 @@ Every page in `book/` and `docs/essays/` starts with a front matter block:
 
 ```yaml
 ---
-status: draft            # draft | reviewed | gold
+status: draft            # draft | agent-verified | reviewed | gold
 ai_involvement: drafted  # drafted | assisted | none
 last_verified:           # YYYY-MM: change ONLY after re-verifying every claim, never for typo fixes
 verified_against:        # versions checked, e.g. react 19.x, tanstack-query 5.x
 review_by:               # YYYY-MM: 6 months for fast-moving topics, 12 months otherwise
-reviewers:               # comma-separated GitHub usernames of the human reviewers
+reviewers:               # comma-separated GitHub usernames of the human reviewers (humans only)
+ledger:                  # path to the page's claim ledger in reviews/ (required once verified)
 ---
 ```
 
-The website shows each page's status in a box at the top: a warning for drafts, and the reviewers, verification date and next review date for reviewed pages. The site's separate "Last updated" date only tracks edits. **`last_verified` is the date that means the facts were checked.**
+The website shows each page's status in a box at the top: a warning for drafts; "Verified by AI agents" with a link to the ledger for agent-verified pages; and the reviewers, verification date and next review date for human-reviewed pages. The site's separate "Last updated" date only tracks edits. **`last_verified` is the date that means the facts were checked.**
 
 | Status | Meaning | Requirements |
 | :--- | :--- | :--- |
-| `draft` | Not yet reviewed against this standard | Front matter present |
-| `reviewed` | Passed every gate; score 13 or more | `last_verified`, `review_by`, at least one human in `reviewers`; no unsourced numbers |
+| `draft` | Not yet verified against this standard | Front matter present |
+| `agent-verified` | Passed the [Agent Verification Protocol](docs/WORKFLOW.md#2-the-agent-verification-protocol): an author pass and an independent verifier pass, every claim checked against primary sources | `last_verified`, `review_by`, `ledger`; empty `reviewers`; no unsourced numbers. The page tells readers no human expert has reviewed it yet. |
+| `reviewed` | A human expert passed every gate; score 13 or more | `last_verified`, `review_by`, `ledger`, at least one human in `reviewers`; no unsourced numbers |
 | `gold` | Score 17 or more, no zeros, second reviewer agrees | As `reviewed`, plus two reviewers |
 
 ---
@@ -66,7 +68,7 @@ Any failed gate blocks merging or a `reviewed` status, regardless of score.
 | G5 | **Examples are safe by default** | No example stores tokens insecurely, disables validation, or injects unsanitised HTML unless it is labelled insecure inline, with a link to OWASP or the spec. |
 | G6 | **No synthetic experience** | No "in my experience", "teams I worked with" or case study unless a named human supplied it and agreed to be credited. |
 | G7 | **No known-stale facts** | Passes the stale-facts list in [`pipelines/config/stale_facts.json`](pipelines/config/stale_facts.json). Deprecations name the date and link the primary announcement. |
-| G8 | **A human is accountable** | A named human reviewer approved the page and can explain every recommendation without AI help. AI involvement is recorded in front matter. |
+| G8 | **Accountability is honest** | For `reviewed` and `gold`: a named human reviewer approved the page and can explain every recommendation without AI help. For `agent-verified`: both protocol passes are recorded in the ledger and the page discloses that no human expert has reviewed it. AI involvement is always recorded in front matter. |
 | G9 | **Same content for agents and humans** | Machine-facing files (llms.txt, Markdown copies, metadata) carry no claims or instructions that the human page does not. |
 | G10 | **Original wording, licence-clean** | Nothing pasted or closely paraphrased from books, courses or paid articles. Short quotes are attributed. |
 
@@ -144,7 +146,7 @@ Rules for reviewers:
 
 ## 7. Workflow 3: AI Agents
 
-Agents that draft or revise pages follow the binding rules in [`AGENTS.md`](AGENTS.md). In short: work from a human-approved brief; produce a claim ledger; never write a number, citation, package or experience that was not verified in the same session; mark anything unverified with `<!-- UNVERIFIED: reason -->` (the build fails until a human resolves it); never set `last_verified`, `status` or `reviewers` themselves.
+Agents follow the binding rules in [`AGENTS.md`](AGENTS.md). Page verification runs every week as the [Agent Verification Protocol](docs/WORKFLOW.md#2-the-agent-verification-protocol): an author pass and an independent verifier pass, each in a fresh context. Never write a number, citation, package or experience that was not verified in the same session. Mark anything unverifiable with `<!-- UNVERIFIED: reason -->`, and the build fails until it is resolved. Only the verifier pass may set `agent-verified`, and no agent may set `reviewed`, `gold` or `reviewers`.
 
 ---
 
@@ -153,14 +155,16 @@ Agents that draft or revise pages follow the binding rules in [`AGENTS.md`](AGEN
 | Check | Covers | Status |
 | :--- | :--- | :--- |
 | No em dashes; no broken relative links | House style; links | Enforced |
-| Front matter present and valid; reviewed pages have dates and a human reviewer | Page status; G8 | Enforced |
+| Front matter present and valid; verified pages have dates and a ledger; reviewed pages have a human reviewer | Page status; G8 | Enforced |
+| New major versions of libraries the book discusses | G7, D6 | Weekly ([freshness report](docs/WORKFLOW.md#3-keeping-information-current)) |
+| Commit message format; no AI attribution trailers | [Commits](docs/WORKFLOW.md#4-commits) | Enforced on pull requests |
 | `UNVERIFIED` markers block the build | AGENTS.md rule A7 | Enforced |
 | Stale-facts list (`pipelines/config/stale_facts.json`) | G7 | Enforced |
-| Numbers with no source link in the same paragraph | G1 | Warning on drafts; **error on reviewed pages** |
+| Numbers with no source link in the same paragraph | G1 | Warning on drafts; **error on verified pages** |
 | AI-vocabulary clusters | D7 | Warning only |
 | Review overdue (`review_by` passed) | Workflow 1, step 9 | Warning |
 | Internal links on the built website | Navigation | Enforced |
-| External link checker | G2, link rot | Planned |
+| External link checker | G2, link rot | Weekly ([freshness report](docs/WORKFLOW.md#3-keeping-information-current)) |
 | Code-block extraction and type-check | G3 | Planned |
 | `npm view` check for every package named in code | G4 | Planned |
 
