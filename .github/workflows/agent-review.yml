@@ -1,0 +1,165 @@
+# Weekly Agent Verification Protocol (see docs/WORKFLOW.md).
+# Picks the next page, runs an author pass and an independent verifier pass with
+# Claude Code, runs every repository check, then opens a pull request.
+# PASS + green checks: the pull request auto-merges. FAIL: it waits for a human.
+#
+# Needs one repository secret: CLAUDE_CODE_OAUTH_TOKEN (run `claude setup-token`).
+# Without it, the workflow skips cleanly.
+
+name: Weekly Agent Review
+
+on:
+  schedule:
+    - cron: "17 6 * * 1" # Mondays 06:17 UTC
+  workflow_dispatch:
+    inputs:
+      page:
+        description: "Page to verify (blank = next in the review queue)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+
+concurrency:
+  group: agent-review
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      MODEL: claude-sonnet-5-5
+      ALLOWED_TOOLS: "Read,Edit,Write,Glob,Grep,WebFetch,WebSearch,Bash(npm view *),Bash(node *),Bash(curl -sL *),Bash(python pipelines/scripts/audit_repo_standards.py),Bash(mkdir -p .agent-review),Bash(date *)"
+    steps:
+      - name: Check for the Claude token
+        id: token
+        env:
+          TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::notice::CLAUDE_CODE_OAUTH_TOKEN is not set; skipping. See docs/WORKFLOW.md."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.token.outputs.present == 'true'
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        if: steps.token.outputs.present == 'true'
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - uses: actions/setup-python@v7
+        if: steps.token.outputs.present == 'true'
+        with:
+          python-version: "3.12"
+
+      - name: Pick the page
+        id: pick
+        if: steps.token.outputs.present == 'true'
+        run: |
+          python pipelines/scripts/next_review.py --github-output "--page=${{ github.event.inputs.page }}"
+          mkdir -p .agent-review
+          echo "today=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Author pass
+        if: steps.pick.outputs.page != ''
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            Follow .github/agent-prompts/author.md exactly.
+            Page: ${{ steps.pick.outputs.page }}
+            Ledger: ${{ steps.pick.outputs.ledger }}
+            Today: ${{ steps.pick.outputs.today }}
+            Why this page: ${{ steps.pick.outputs.reason }}
+          claude_args: |
+            --model ${{ env.MODEL }}
+            --max-turns 80
+            --allowedTools "${{ env.ALLOWED_TOOLS }}"
+
+      - name: Independent verifier pass
+        if: steps.pick.outputs.page != ''
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            Follow .github/agent-prompts/verifier.md exactly.
+            Page: ${{ steps.pick.outputs.page }}
+            Ledger: ${{ steps.pick.outputs.ledger }}
+            Today: ${{ steps.pick.outputs.today }}
+          claude_args: |
+            --model ${{ env.MODEL }}
+            --max-turns 80
+            --allowedTools "${{ env.ALLOWED_TOOLS }}"
+
+      - name: Only the page and its review files may change
+        if: steps.pick.outputs.page != ''
+        env:
+          PAGE: ${{ steps.pick.outputs.page }}
+          LEDGER: ${{ steps.pick.outputs.ledger }}
+        run: |
+          git add -A
+          git reset -q -- .agent-review
+          unexpected=$(git diff --cached --name-only | grep -vxF -e "$PAGE" -e "$LEDGER" -e "reviews/README.md" || true)
+          if [ -n "$unexpected" ]; then
+            echo "::error::Agents changed files outside their scope:"; echo "$unexpected"; exit 1
+          fi
+          if git diff --cached --quiet; then
+            echo "::notice::No changes were made."; echo "changed=false" >> "$GITHUB_ENV"
+          else
+            echo "changed=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Repository checks (audit, tests, site build)
+        if: steps.pick.outputs.page != '' && env.changed == 'true'
+        run: |
+          python pipelines/scripts/audit_repo_standards.py
+          python -m unittest discover -s tests -p "test_*.py"
+          npm test
+          npm --prefix site ci
+          npm --prefix site run build
+
+      - name: Open the pull request
+        if: steps.pick.outputs.page != '' && env.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAGE: ${{ steps.pick.outputs.page }}
+          SLUG: ${{ steps.pick.outputs.slug }}
+          TODAY: ${{ steps.pick.outputs.today }}
+        run: |
+          verdict=$(tr -d '[:space:]' < .agent-review/verdict.txt 2>/dev/null || echo FAIL)
+          branch="review/${SLUG}-${TODAY}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          if [ "$verdict" = "PASS" ]; then
+            title="review(${SLUG}): agent-verify against primary sources"
+          else
+            title="review(${SLUG}): revise draft; verification failed"
+          fi
+          git commit -q -m "$title" -m "Agent Verification Protocol run on ${TODAY}. Verdict: ${verdict}. See the claim ledger for every source."
+          git push -q origin "$branch"
+          body=.agent-review/pr-body.md
+          [ -s "$body" ] || echo "Verdict: ${verdict}. See the ledger in reviews/." > "$body"
+          printf '\n\n## AI assistance\n\nWritten and verified by the weekly Agent Verification Protocol (Claude Code, two independent passes). Every claim is in the ledger with its source.\n' >> "$body"
+          url=$(gh pr create --base main --head "$branch" --title "$title" --body-file "$body")
+          echo "Opened $url"
+          if [ "$verdict" = "PASS" ]; then
+            gh pr merge "$url" --auto --squash
+          else
+            gh pr edit "$url" --add-label "needs-attention"
+          fi

@@ -1,0 +1,41 @@
+# Weekly freshness report (see docs/WORKFLOW.md): new major versions of libraries
+# the book discusses, pages overdue for re-verification, and broken links.
+# Results go into one pinned issue labelled "freshness", updated every week.
+
+name: Weekly Freshness Report
+
+on:
+  schedule:
+    - cron: "43 5 * * 1" # Mondays 05:43 UTC, before the agent review
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Build the report
+        run: python pipelines/scripts/freshness_report.py --output freshness.md
+
+      - name: Update the freshness issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create freshness --color FBCA04 --description "Weekly freshness report" 2>/dev/null || true
+          number=$(gh issue list --label freshness --state open --json number --jq '.[0].number')
+          if [ -z "$number" ]; then
+            gh issue create --title "Weekly freshness report" --label freshness --body-file freshness.md
+          else
+            gh issue edit "$number" --body-file freshness.md
+            gh issue comment "$number" --body "Report refreshed $(date -u +%Y-%m-%d)."
+          fi
