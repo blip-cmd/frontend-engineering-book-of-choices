@@ -35,7 +35,7 @@ The most useful contributions right now:
 * **Real-world experience:** "we chose X and this is what it cost us."
 * **Sources:** links to official docs, specs and benchmarks for claims that lack them.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to help and [ROADMAP.md](ROADMAP.md) for what is planned.
+Pages are verified one per week against primary sources by an automated, two-pass agent process; each page's status box says how far it has been checked, and every verified page links to its claim ledger. See [docs/WORKFLOW.md](docs/WORKFLOW.md) for the process, [CONTRIBUTING.md](CONTRIBUTING.md) for how to help and [ROADMAP.md](ROADMAP.md) for what is planned.
 
 ---
 

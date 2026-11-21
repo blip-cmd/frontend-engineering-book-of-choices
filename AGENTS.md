@@ -35,7 +35,7 @@ These rules bind any agent that edits `book/`, `docs/` or `library/`. They imple
 
 | ID | Rule |
 | :--- | :--- |
-| A1 | **MUST** work from a brief approved by a human (target reader, the decision the page supports, thesis). **MUST NOT** choose the thesis or the recommendation yourself. |
+| A1 | **MUST** work from a brief: the target reader, the decision the page supports, and its thesis. In the Agent Verification Protocol the thesis is the page's existing one. **MUST NOT** change a recommendation unless a primary source contradicts it, and **MUST** record every such change in the ledger. |
 | A2 | **MUST** produce a claim ledger with every content change: every factual claim, number, API, package, version and attribution, each marked verified (with URL and date) or `UNVERIFIED`. |
 | A3 | **MUST NOT** write any number, threshold, benchmark or percentage without a source fetched in the same session. If there is no source, make the claim qualitative or remove it. |
 | A4 | **MUST** check package names and versions against the registry (`npm view <name>`) and APIs against current official docs. **MUST NOT** rely on versions remembered from training data. |
@@ -44,9 +44,9 @@ These rules bind any agent that edits `book/`, `docs/` or `library/`. They imple
 | A7 | **MUST** mark any claim you could not verify with `<!-- UNVERIFIED: reason -->`. The audit fails on this marker, so a human resolves each one. |
 | A8 | **MUST** avoid filler openings, clusters of AI vocabulary (delve, underscore, showcase, pivotal, crucial, notably, comprehensive, testament, tapestry, seamless, robust, leverage, landscape), "not just X but Y" constructions, rule-of-three padding and closing lines about significance. Fix these by making the claim specific, not by swapping synonyms. |
 | A9 | **MUST** keep each section self-contained (name its framework, version and constraint) and pin versions in place. **MUST NOT** use "currently", "new", "latest" or "recently" in a time sense. |
-| A10 | **MUST NOT** change `status`, `last_verified`, `review_by` or `reviewers` in front matter. Only a human reviewer sets these. |
+| A10 | **MUST NOT** change `status`, `last_verified`, `review_by`, `verified_against` or `ledger` in front matter, **except** as the verifier pass of the [Agent Verification Protocol](docs/WORKFLOW.md#2-the-agent-verification-protocol) after a PASS verdict, and then only to set `agent-verified`. |
 | A11 | **MUST NOT** add agent-only instructions or content (llms.txt, hidden markup, metadata) that differs from what the human-readable page says. |
-| A12 | **MUST NOT** approve pull requests, mark work as reviewed, or add reviewer names. Only humans certify review. |
+| A12 | **MUST NOT** approve pull requests, set `reviewed` or `gold`, or add names to `reviewers`. Only humans certify human review. |
 | A13 | **MUST** default to the safe pattern in examples, and label any insecure code inline with a link to OWASP or the relevant spec. |
 | A14 | **MUST** prefer deleting a dubious claim over hedging it ("may", "often", "in some cases") to keep it. |
 | A15 | **MUST** follow the house style (no em dashes; `npm run audit` checks this). Treat it as style, not as evidence of quality. |
@@ -57,6 +57,6 @@ These rules bind any agent that edits `book/`, `docs/` or `library/`. They imple
 * Add or update tests for any behaviour you change.
 * Do not add dependencies without a stated reason in the pull request.
 
-## Pull Requests
+## Commits and Pull Requests
 
-Fill in the pull request template, including the AI-assistance disclosure and the claim ledger. A human must be able to explain every change without AI help before it is merged.
+Follow [docs/WORKFLOW.md](docs/WORKFLOW.md): `type(scope): summary` commit messages, **no AI attribution trailers** (no `Co-authored-by: Claude`, no "Generated with" footers), one concern per pull request, and the pull request template with its AI-assistance disclosure and claim ledger.
