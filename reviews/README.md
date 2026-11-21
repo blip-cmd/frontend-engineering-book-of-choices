@@ -8,3 +8,4 @@ Ledgers are written by the verification process in [CONTENT_STANDARDS.md](../CON
 | :--- | :--- | :--- | :--- | :--- |
 | Appendix C: Production Frontend Security Hardening Checklist | agent-verified | 2026-11 | 2027-05 | [ledger](appendix-c-frontend-security-checklist.md) |
 | Appendix B: Core Web Vitals Production Triage Guide | agent-verified | 2026-11 | 2027-05 | [ledger](core-web-vitals-triage-guide.md) |
+| Appendix D: Zero-Downtime Migration Playbooks | agent-verified | 2026-11 | 2027-05 | [ledger](migration-playbooks.md) |
