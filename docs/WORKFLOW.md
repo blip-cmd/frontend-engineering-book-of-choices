@@ -99,7 +99,7 @@ outreach: log LinkedIn post for Appendix C
 
 * **Branch names:** `review/<page-slug>[-date]`, `content/<topic>`, `fix/<topic>`, `feat/<topic>`, `docs/<topic>`, `outreach/<topic>`, `chore/<topic>`.
 * **Everything reaches `main` through a pull request**, using the [template](../.github/pull_request_template.md): AI disclosure plus a claim ledger for content changes.
-* **Merging:** squash merge, with the pull request title as the commit message, so the title follows the commit format too.
+* **Merging:** squash merge, so the pull request title becomes the commit message and must follow the commit format. When a pull request is a deliberate series of focused commits that each pass the checker, use a rebase merge to keep them.
 * **Required:** green CI and a signed CLA. Agent review pull requests also need a PASS verdict to auto-merge.
 * **Maintainer override:** the repository admin can bypass the branch rules, including force-push, until the book is declared ready. This is reserved for history cleanup and emergencies.
 
