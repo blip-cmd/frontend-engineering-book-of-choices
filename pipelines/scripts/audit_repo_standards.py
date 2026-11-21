@@ -9,7 +9,7 @@ against the automatable parts of CONTENT_STANDARDS.md:
 
   errors (fail CI)                       warnings (reported, do not fail)
   - missing or invalid review front matter - unsourced numbers on draft pages
-  - reviewed pages missing verification    - AI-vocabulary clusters
+  - verified pages missing dates/ledger     - AI-vocabulary clusters
   - UNVERIFIED markers left in the text    - reviewed pages past their review_by date
   - known-stale facts (stale_facts.json)
   - unsourced numbers on reviewed pages
@@ -24,9 +24,9 @@ import sys
 from urllib.parse import unquote
 
 try:
-    from pipelines.scripts.content_meta import AI_INVOLVEMENT, REQUIRED_KEYS, STATUSES, split_front_matter
+    from pipelines.scripts.content_meta import AI_INVOLVEMENT, REQUIRED_KEYS, STATUSES, VERIFIED_STATUSES, split_front_matter
 except ImportError:  # run directly as a script
-    from content_meta import AI_INVOLVEMENT, REQUIRED_KEYS, STATUSES, split_front_matter
+    from content_meta import AI_INVOLVEMENT, REQUIRED_KEYS, STATUSES, VERIFIED_STATUSES, split_front_matter
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 STALE_FACTS = json.loads((REPO_ROOT / "pipelines" / "config" / "stale_facts.json").read_text(encoding="utf-8"))
@@ -125,13 +125,20 @@ def audit_content_page(text, today):
         errors.append(f"Front matter status must be one of {STATUSES}, got '{status}'")
     if meta.get("ai_involvement", "") not in AI_INVOLVEMENT:
         errors.append(f"Front matter ai_involvement must be one of {AI_INVOLVEMENT}")
-    reviewed = status in ("reviewed", "gold")
+    reviewed = status in VERIFIED_STATUSES
     if reviewed:
         for key in ("last_verified", "review_by"):
             if not YEAR_MONTH.match(meta.get(key, "")):
-                errors.append(f"Reviewed page needs {key} as YYYY-MM")
-        if not meta.get("reviewers"):
-            errors.append("Reviewed page needs at least one human reviewer (gate G8)")
+                errors.append(f"Verified page needs {key} as YYYY-MM")
+        ledger = meta.get("ledger", "")
+        if not ledger:
+            errors.append("Verified page needs a ledger: path to its claim ledger in reviews/")
+        elif not (REPO_ROOT / ledger).is_file():
+            errors.append(f"Claim ledger not found: {ledger}")
+    if status in ("reviewed", "gold") and not meta.get("reviewers"):
+        errors.append("Reviewed page needs at least one human reviewer (gate G8)")
+    if status == "agent-verified" and meta.get("reviewers"):
+        errors.append("agent-verified pages must leave reviewers empty: reviewers are humans only (rule A12)")
         if YEAR_MONTH.match(meta.get("review_by", "")) and meta["review_by"] < today.strftime("%Y-%m"):
             warnings.append(f"Review overdue: review_by {meta['review_by']} has passed")
 

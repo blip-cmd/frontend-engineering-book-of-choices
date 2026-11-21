@@ -11,7 +11,7 @@ export const collections = {
 		schema: docsSchema({
 			// Review status copied from the book's front matter by scripts/sync-content.mjs.
 			extend: z.object({
-				reviewStatus: z.enum(['draft', 'reviewed', 'gold']).optional(),
+				reviewStatus: z.enum(['draft', 'agent-verified', 'reviewed', 'gold']).optional(),
 				lastVerified: z.string().regex(/^\d{4}-\d{2}$/).optional(),
 			}),
 		}),
