@@ -23,3 +23,6 @@ dist/
 *.pdf
 *.epub
 
+
+# Scratch files from the weekly agent review workflow
+.agent-review/

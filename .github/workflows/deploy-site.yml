@@ -3,6 +3,8 @@ name: Deploy Website to GitHub Pages
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "11 7 * * *" # daily: picks up merges made by automation, which do not trigger push builds
   workflow_dispatch:
 
 permissions:

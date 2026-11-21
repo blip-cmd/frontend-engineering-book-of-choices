@@ -1,0 +1,255 @@
+{
+  "_about": "Major versions recorded as the baseline on the given date. The weekly freshness job compares them with npm and lists pages that mention a package whose major version changed. After those pages are re-verified, update 'major' here.",
+  "baseline_date": "2026-11-21",
+  "packages": {
+    "react": {
+      "major": "19",
+      "terms": [
+        "React"
+      ]
+    },
+    "next": {
+      "major": "16",
+      "terms": [
+        "Next.js"
+      ]
+    },
+    "vite": {
+      "major": "8",
+      "terms": [
+        "Vite"
+      ]
+    },
+    "astro": {
+      "major": "7",
+      "terms": [
+        "Astro"
+      ]
+    },
+    "svelte": {
+      "major": "5",
+      "terms": [
+        "Svelte"
+      ]
+    },
+    "@sveltejs/kit": {
+      "major": "3",
+      "terms": [
+        "SvelteKit"
+      ]
+    },
+    "vue": {
+      "major": "3",
+      "terms": [
+        "Vue"
+      ]
+    },
+    "nuxt": {
+      "major": "4",
+      "terms": [
+        "Nuxt"
+      ]
+    },
+    "solid-js": {
+      "major": "2",
+      "terms": [
+        "Solid"
+      ]
+    },
+    "preact": {
+      "major": "11",
+      "terms": [
+        "Preact"
+      ]
+    },
+    "@preact/signals": {
+      "major": "2",
+      "terms": [
+        "Preact Signals",
+        "@preact/signals"
+      ]
+    },
+    "@builder.io/qwik": {
+      "major": "1",
+      "terms": [
+        "Qwik"
+      ]
+    },
+    "react-router": {
+      "major": "8",
+      "terms": [
+        "React Router",
+        "Remix"
+      ]
+    },
+    "@tanstack/react-query": {
+      "major": "5",
+      "terms": [
+        "TanStack Query",
+        "React Query"
+      ]
+    },
+    "swr": {
+      "major": "2",
+      "terms": [
+        "SWR"
+      ]
+    },
+    "zustand": {
+      "major": "5",
+      "terms": [
+        "Zustand"
+      ]
+    },
+    "jotai": {
+      "major": "3",
+      "terms": [
+        "Jotai"
+      ]
+    },
+    "nanostores": {
+      "major": "1",
+      "terms": [
+        "Nano Stores",
+        "nanostores"
+      ]
+    },
+    "@reduxjs/toolkit": {
+      "major": "2",
+      "terms": [
+        "Redux Toolkit",
+        "RTK Query"
+      ]
+    },
+    "@trpc/server": {
+      "major": "11",
+      "terms": [
+        "tRPC"
+      ]
+    },
+    "graphql": {
+      "major": "17",
+      "terms": [
+        "GraphQL"
+      ]
+    },
+    "zod": {
+      "major": "4",
+      "terms": [
+        "Zod",
+        "zod"
+      ]
+    },
+    "valibot": {
+      "major": "1",
+      "terms": [
+        "Valibot",
+        "valibot"
+      ]
+    },
+    "tailwindcss": {
+      "major": "4",
+      "terms": [
+        "Tailwind"
+      ]
+    },
+    "@stylexjs/stylex": {
+      "major": "0.19",
+      "terms": [
+        "StyleX"
+      ]
+    },
+    "@pandacss/dev": {
+      "major": "2",
+      "terms": [
+        "Panda"
+      ]
+    },
+    "styled-components": {
+      "major": "6",
+      "terms": [
+        "styled-components"
+      ]
+    },
+    "@radix-ui/react-dialog": {
+      "major": "1",
+      "terms": [
+        "Radix"
+      ]
+    },
+    "react-aria-components": {
+      "major": "1",
+      "terms": [
+        "React Aria"
+      ]
+    },
+    "@ark-ui/react": {
+      "major": "5",
+      "terms": [
+        "Ark UI"
+      ]
+    },
+    "yjs": {
+      "major": "13",
+      "terms": [
+        "Yjs"
+      ]
+    },
+    "@automerge/automerge": {
+      "major": "3",
+      "terms": [
+        "Automerge"
+      ]
+    },
+    "@rspack/core": {
+      "major": "2",
+      "terms": [
+        "Rspack"
+      ]
+    },
+    "webpack": {
+      "major": "5",
+      "terms": [
+        "Webpack",
+        "webpack"
+      ]
+    },
+    "typescript": {
+      "major": "7",
+      "terms": [
+        "TypeScript"
+      ]
+    },
+    "vitest": {
+      "major": "5",
+      "terms": [
+        "Vitest"
+      ]
+    },
+    "@playwright/test": {
+      "major": "1",
+      "terms": [
+        "Playwright"
+      ]
+    },
+    "msw": {
+      "major": "3",
+      "terms": [
+        "MSW",
+        "Mock Service Worker"
+      ]
+    },
+    "dompurify": {
+      "major": "3",
+      "terms": [
+        "DOMPurify"
+      ]
+    },
+    "@qwik.dev/partytown": {
+      "major": "1",
+      "terms": [
+        "Partytown"
+      ]
+    }
+  }
+}

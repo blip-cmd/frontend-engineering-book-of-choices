@@ -1,0 +1,25 @@
+{
+  "_about": "Order in which draft pages are verified (highest risk first). The weekly agent review takes the first page that is overdue for re-verification, otherwise the first draft in this list.",
+  "queue": [
+    "book/10_appendices/frontend_security_checklist.md",
+    "book/10_appendices/core_web_vitals_triage_guide.md",
+    "book/10_appendices/migration_playbooks.md",
+    "book/03_state_and_cache_topologies.md",
+    "docs/essays/why_server_caches_replace_most_redux_stores.md",
+    "docs/essays/the_14kb_tcp_slow_start_budget.md",
+    "book/07_delivery_and_build_pipeline.md",
+    "book/09_decision_playbooks/content_first_publishing.md",
+    "book/09_decision_playbooks/enterprise_b2b_saas.md",
+    "book/09_decision_playbooks/high_frequency_realtime_dashboard.md",
+    "book/09_decision_playbooks/collaborative_canvas_workspace.md",
+    "book/09_decision_playbooks/low_latency_ecommerce.md",
+    "book/01_where_code_runs.md",
+    "book/02_the_reactivity_dilemma.md",
+    "book/04_the_networking_contract.md",
+    "book/05_design_engineering_and_ui.md",
+    "book/06_styling_and_presentation.md",
+    "book/08_local_first_and_offline_resilience.md",
+    "book/00_the_calculus_of_choices.md",
+    "book/10_appendices/architecture_anti_patterns.md"
+  ]
+}
