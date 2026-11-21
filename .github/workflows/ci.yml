@@ -26,6 +26,10 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Commit messages follow the standard
+        if: github.event_name == 'pull_request'
+        run: python pipelines/scripts/check_commits.py --range "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+
       - name: Standards audit (no em dashes, no broken relative links)
         run: python pipelines/scripts/audit_repo_standards.py
 
