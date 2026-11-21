@@ -7,3 +7,4 @@ Ledgers are written by the verification process in [CONTENT_STANDARDS.md](../CON
 | Page | Status | Verified | Next check | Ledger |
 | :--- | :--- | :--- | :--- | :--- |
 | Appendix C: Production Frontend Security Hardening Checklist | agent-verified | 2026-11 | 2027-05 | [ledger](appendix-c-frontend-security-checklist.md) |
+| Appendix B: Core Web Vitals Production Triage Guide | agent-verified | 2026-11 | 2027-05 | [ledger](core-web-vitals-triage-guide.md) |
