@@ -1,0 +1,9 @@
+# Claim Ledgers
+
+Each verified page in the book has a claim ledger here: every factual claim on the page, the primary source behind it, and the result of each verification pass. The website links to the ledger from the page's status box.
+
+Ledgers are written by the verification process in [CONTENT_STANDARDS.md](../CONTENT_STANDARDS.md) and [docs/WORKFLOW.md](../docs/WORKFLOW.md). Found a claim that does not hold up? [Open a correction](https://github.com/blip-cmd/frontend-engineering-book-of-choices/issues/new?template=correction.yml) and quote the ledger row.
+
+| Page | Status | Verified | Next check | Ledger |
+| :--- | :--- | :--- | :--- | :--- |
+| Appendix C: Production Frontend Security Hardening Checklist | agent-verified | 2026-11 | 2027-05 | [ledger](appendix-c-frontend-security-checklist.md) |
