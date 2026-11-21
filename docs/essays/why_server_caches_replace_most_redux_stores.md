@@ -1,125 +1,139 @@
 ---
-status: draft
+status: agent-verified
 ai_involvement: drafted
-last_verified:
-verified_against:
-review_by:
+last_verified: 2026-11
+verified_against: tanstack-query 5.108.2 docs, redux docs, redux-toolkit 2.15.0 (RTK Query overview), swr 2.5.1 README, apollo-client 4.x caching overview, nuqs 2.10.3, react.dev, MDN Set-Cookie
+review_by: 2027-05
 reviewers:
+ledger: reviews/why-server-caches-replace-most-redux-stores.md
 ---
 
 # Why Server Caches Replace Most Redux Stores
 
-> An architectural analysis on why conflating remote asynchronous server state with local synchronous UI state created a decade of unnecessary frontend complexity.
+> An essay for a React developer or tech lead deciding where server data should live. Its position: data fetched from a server is a cache of someone else's state, and a purpose-built query cache handles it with far less code than a hand-written client store. The essay also names the applications where a client store still earns its place.
 
 ---
 
-## 1. The Redux Era and the Monolithic State Delusion
+## 1. How server data ended up in Redux stores
 
-For nearly a decade, the conventional wisdom in React development dictated placing all application data into a centralized, single-source-of-truth Redux or MobX store. Whenever an application needed data from a backend server, the pattern was invariant:
+The Redux docs teach a standard pattern for tracking a request in the store ([Redux Fundamentals, Part 7: Standard Redux Patterns](https://redux.js.org/tutorials/fundamentals/part-7-standard-patterns)). For each request it looks like this:
 
-1. Dispatch an action (`FETCH_USERS_REQUEST`).
-2. Toggle a boolean flag in a reducer (`state.isLoading = true`).
-3. Make an asynchronous HTTP request using `axios` or `fetch`.
-4. Dispatch a success action (`FETCH_USERS_SUCCESS`) with payload.
-5. Store the raw server response inside the global client state tree.
-6. Write selectors to slice, memoize, and project that data into React components.
+1. Dispatch an action when the request starts (`FETCH_USERS_REQUEST`).
+2. Set a status field in a reducer (the docs recommend an enum such as `status: 'loading'` over an `isLoading` boolean).
+3. Make the HTTP request with `fetch` or `axios`.
+4. Dispatch a success or failure action (`FETCH_USERS_SUCCESS`) with the payload.
+5. Store the server response in the global state tree.
+6. Write selectors that slice, memoize and project that data into components.
 
-This workflow was repeated for every entity in the system: users, billing items, comments, permissions, and notifications. 
+An app that uses this pattern for every entity repeats these steps for users, billing items, comments, permissions and notifications. The Redux FAQ lists caching as a reason to put data in Redux ("use what's in state if it's already there instead of re-requesting it"), while also saying "Using local component state is fine" ([Redux FAQ: Organizing State](https://redux.js.org/faq/organizing-state)).
 
-The fundamental architectural flaw was not Redux itself; Redux is a clean, deterministic implementation of Flux and the Elm Architecture. The fatal mistake was treating **server-origin data** as if it were **client state**.
+Redux's docs describe it as evolving the ideas of Flux "but avoids its complexity by taking cues from Elm" ([Redux: Prior Art](https://redux.js.org/understanding/history-and-design/prior-art)). The book's position is that Redux is a sound design, and that the costly mistake was treating **server-origin data** as if it were **client state**.
 
 ---
 
-## 2. The Great Taxonomy: Client State vs. Server Cache
+## 2. Two kinds of data: client state and server cache
 
-To understand why this architecture collapsed under its own weight, we must separate data into two orthogonal categories:
+Deciding where a piece of data lives starts with sorting it into one of two categories.
 
-### True Client State
-Data that is created, owned, and manipulated entirely within the user's browser session:
-* Open modal toggles and dialog visibility.
-* Active tab selection and navigation drawers.
-* Controlled form inputs prior to submission.
-* Theme preferences (light/dark mode) and layout column widths.
+### Client state: owned by the browser session
 
-True client state is synchronous, client-owned, instantly mutable, and represents the ephemeral posture of the user interface.
+Data that is created, owned and changed entirely within the user's browser session:
 
-### Server Cache
-Data that is persisted remotely on backend databases:
+* Whether a modal or dialog is open.
+* The active tab and whether a navigation drawer is open.
+* Controlled form inputs before submission.
+* Theme (light or dark) and layout column widths, until they are saved to an account.
+
+Client state is synchronous: the app changes it directly, and nobody else can change it.
+
+### Server cache: a copy of state the server owns
+
+Data persisted on backend databases:
+
 * User profile records.
-* Shopping cart contents.
+* Shopping cart contents saved to an account.
 * Inventory availability and account balances.
 * Team member permissions and activity feeds.
 
-Server data is asynchronous, remote-owned, shared across multiple users concurrently, and inherently out of date the moment it finishes downloading over the network. It is not state; it is a **temporary, potentially stale snapshot cache of remote state**.
+TanStack Query's docs list what makes server state different: it is persisted remotely, in a location you may not control; it needs asynchronous APIs to fetch and update; it has shared ownership and "can be changed by other people without your knowledge"; and it can become out of date ([TanStack Query: Overview](https://tanstack.com/query/latest/docs/framework/react/overview)). TanStack Query v5 builds that last point into its defaults: queries "consider cached data as stale" unless you set a `staleTime` ([Important Defaults](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults)). The book's position follows from this: what the client holds is a **snapshot of remote state that may already be stale**, and code should treat it that way.
 
 ---
 
-## 3. The 9 Hidden Complexities of Server Cache Management
+## 3. Nine problems a hand-written server cache must solve
 
-When engineering teams attempt to manage server data manually inside a client store (Redux, Zustand, Pinia), they must invent bespoke solutions for nine distinct operational problems:
+An application that keeps server data in a client store (Redux, Zustand, Pinia) has to write its own answer to each of these problems. Most of them appear in the challenges list of [TanStack Query's overview](https://tanstack.com/query/latest/docs/framework/react/overview), and the mechanisms named below are TanStack Query v5's:
 
-1. **Deduplication:** Preventing three components mounted on the same page from firing three identical HTTP requests.
-2. **Staleness Tracking:** Knowing when cached data is fresh enough to render versus when background refetching is required.
-3. **Garbage Collection:** Evicting unmounted query cache entries to prevent browser memory leaks.
-4. **Structural Sharing:** Preserving immutable object references between identical background fetches to avoid unnecessary React re-renders.
-5. **Window Refocus Invalidation:** Silently updating stale data when a user navigates back to the browser tab after an hour away.
-6. **Network Reconnect Polling:** Automatically resuming fetches when an unstable mobile device regains cellular connectivity.
-7. **Optimistic Mutations:** Updating the UI within 16 milliseconds of a button click, with deterministic rollback if the network request fails.
-8. **Pagination and Infinite Scroll State:** Merging subsequent pages of data without race conditions.
-9. **Mutation Invalidation Cascades:** Purging affected read caches whenever an edit or delete mutation succeeds.
+1. **Deduplication:** two components that mount with the same query key while a request is in flight share that request and one cache entry, instead of firing two ([the overview](https://tanstack.com/query/latest/docs/framework/react/overview) lists "Deduping multiple requests for the same data into a single request"). Once that request has finished and the data is stale, a newly mounted component triggers a background refetch ([Caching Examples](https://tanstack.com/query/latest/docs/framework/react/guides/caching)).
+2. **Staleness tracking:** deciding whether cached data is fresh enough to render or needs a background refetch (`staleTime`).
+3. **Garbage collection:** deleting cache entries nobody uses so the cache does not grow without limit. TanStack Query removes inactive queries after a `gcTime` that defaults to 5 minutes ([Important Defaults](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults)).
+4. **Structural sharing:** keeping the same object references when a refetch returns identical data, and replacing only the parts that changed, so the `data` returned from the hooks stays as stable as possible ([Render Optimizations](https://tanstack.com/query/latest/docs/framework/react/guides/render-optimizations)).
+5. **Refetch on window focus:** requesting fresh data in the background when a user returns to the tab and the data is stale ([Window Focus Refetching](https://tanstack.com/query/latest/docs/framework/react/guides/window-focus-refetching)).
+6. **Offline and reconnect handling:** pausing requests while the device is offline and resuming them, or refetching stale data, when the connection returns ([Network Mode](https://tanstack.com/query/latest/docs/framework/react/guides/network-mode)).
+7. **Optimistic updates:** showing the result of a mutation before the server confirms it, and rolling it back if the request fails ([Optimistic Updates](https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates)).
+8. **Pagination and infinite scroll:** keeping fetched pages together and knowing whether another page exists (`useInfiniteQuery`, `hasNextPage`) ([Infinite Queries](https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries)).
+9. **Invalidation after mutations:** invalidating related queries when an edit or delete succeeds, so they can be refetched to account for the change ([Invalidations from Mutations](https://tanstack.com/query/latest/docs/framework/react/guides/invalidations-from-mutations)).
 
-In a traditional Redux codebase, writing custom code to address these nine concerns consumes 80% of an engineering team's time.
+The Redux team describes the cost of solving these by hand. Even with Redux Toolkit's `createAsyncThunk`, "users still have to write significant amounts of reducer logic to manage the loading state and the cached data" ([RTK Query Overview](https://redux-toolkit.js.org/rtk-query/overview)).
 
 ---
 
-## 4. How TanStack Query Inverted the Model
+## 4. What a query cache changes: keys, staleness and invalidation
 
-TanStack Query (React Query) fundamentally re-centered the frontend architecture by treating remote data strictly as a managed asynchronous cache keyed by deterministic arrays:
+TanStack Query v5 (`@tanstack/react-query`, version 5.108.2 on npm on 2026-11-21) stores each result under a query key, an array that identifies the data. Components ask for a key, and the cache decides whether to fetch. The following fragment runs inside a React component rendered under a `QueryClientProvider`; `fetchUserById` and `userId` come from your application:
 
 ```typescript
-// Reading cached server data with automatic deduplication, caching, and background refetch
+// Fragment: inside a React component under <QueryClientProvider>.
+// Components that use the same key share one cache entry, and requests
+// already in flight for that key are deduplicated.
 const { data: user, isPending, error } = useQuery({
   queryKey: ['users', userId],
   queryFn: () => fetchUserById(userId),
-  staleTime: 1000 * 60 * 5, // Data remains fresh for 5 minutes
+  staleTime: 1000 * 60 * 5, // treat the data as fresh for 5 minutes
 });
 ```
 
-When a user mutates data, declarative cache invalidation replaces manual reducer updates:
+After a mutation succeeds, you invalidate the affected keys instead of writing a reducer that patches the stored copy:
 
 ```typescript
+// Fragment: inside the same component; updateUserName is your API call.
 const queryClient = useQueryClient();
 
 const mutation = useMutation({
   mutationFn: updateUserName,
-  onSuccess: () => {
-    // Invalidate the cache key globally; all mounted components update automatically
-    queryClient.invalidateQueries({ queryKey: ['users', userId] });
-  },
+  onSuccess: () =>
+    // Marks matching queries stale; queries that are rendered refetch in the
+    // background. Returning the promise keeps the mutation pending until then.
+    queryClient.invalidateQueries({ queryKey: ['users', userId] }),
 });
 ```
 
-By delegating staleness, deduplication, and cache invalidation to the runtime engine, over 90% of boilerplate actions, reducers, and selectors disappear from the codebase.
+Both calls use the v5 single-object signature, and `isPending` is the v5 name for what v4 called `isLoading` ([Migrating to TanStack Query v5](https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5)). Invalidation matches by prefix, so `['users']` also invalidates `['users', 7]` ([Query Invalidation](https://tanstack.com/query/latest/docs/framework/react/guides/query-invalidation)).
+
+TanStack's own docs say which code this removes: connectors, action creators, middlewares, reducers, loading, error and result states, and contexts used for server data ([Does TanStack Query replace Redux, MobX or other global state managers?](https://tanstack.com/query/latest/docs/framework/react/guides/does-this-replace-client-state)). That page is the library's own advocacy, and the amount removed depends on how much server data the store held.
+
+The same model is available without leaving Redux. RTK Query ships inside Redux Toolkit (version 2.15.0 on npm on 2026-11-21) and exists because "'data fetching and caching' is really a different set of concerns than 'state management'" ([RTK Query Overview](https://redux-toolkit.js.org/rtk-query/overview)). The decision this essay supports is whether server data sits in a purpose-built cache; that cache can be TanStack Query, SWR, Apollo Client or RTK Query.
 
 ---
 
-## 5. The Modern Frontend Architecture Topology
+## 5. Where each kind of state goes once the server cache moves out
 
-With server cache offloaded to specialized cache runtimes (TanStack Query, SWR, or Apollo Client), what remains in the global client store?
+With server data in a query cache, the remaining state splits into four places:
 
-Very little. The resulting stack is compact, fast, and durable:
+1. **Server cache:** TanStack Query, [SWR](https://github.com/vercel/swr) (named after `stale-while-revalidate`, a cache invalidation strategy popularized by HTTP RFC 5861, with request deduplication and revalidation on focus and on network recovery), Apollo Client for GraphQL (a [normalized, in-memory cache](https://www.apollographql.com/docs/react/caching/overview)) or RTK Query. This layer owns fetching, background refetching and optimistic rollback.
+2. **URL state:** search parameters, page numbers and filters kept in the URL, through router hooks or [nuqs](https://nuqs.dev/) ("Like useState, but stored in the URL query string"). A URL with its state in it can be shared and bookmarked.
+3. **Local component state:** `useState` or `useReducer` for toggles and input fields that one component, or one subtree, uses ([React: Managing State](https://react.dev/learn/managing-state)).
+4. **Global client store:** whatever is left. In TanStack's own example, moving four kinds of server data out leaves only `themeMode` and `sidebarStatus` ([TanStack Query docs](https://tanstack.com/query/latest/docs/framework/react/guides/does-this-replace-client-state)). A small [Zustand](https://github.com/pmndrs/zustand) store, React context or a Redux slice can hold that. Session tokens do not need to be in this store: MDN says the `HttpOnly` cookie attribute "Forbids JavaScript from accessing the cookie" and that this "mitigates attacks against cross-site scripting (XSS)" ([MDN: Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie)).
 
-1. **Server Cache (80% to 90% of application data):** Managed by TanStack Query. Handles all remote network synchronization and optimistic rollbacks.
-2. **URL State (5% to 10% of state):** Search parameters, active page numbers, and filtering facets stored in the browser URL (via `nuqs` or router hooks). This makes application states shareable and bookmarkable by default.
-3. **Local Component State (5%):** Managed by `useState` or `useReducer` for ephemeral toggles and input fields.
-4. **Global Client Store (Remaining 1% to 2%):** A tiny Zustand store (often under 50 lines of code) managing authentication session tokens and global user preferences.
+The exception is an application whose main state is synchronous and client-only. TanStack's docs name "a visual designer or music production application" as cases where "you will probably still want a client state manager", and say TanStack Query "is not a replacement for local/client state management" ([TanStack Query docs](https://tanstack.com/query/latest/docs/framework/react/guides/does-this-replace-client-state)). In those apps the client store stays large, and a query cache sits next to it for the server data.
 
 ---
 
-## 6. Conclusion and Actionable Heuristic
+## 6. A test to run before adding a slice of global state
 
-Before creating a new slice in your global client store, ask a simple question:
+The book's position, offered as a rule of thumb rather than a law: before adding a slice to a global client store, ask one question.
 
 > Did this data originate from a network endpoint?
 
-If the answer is yes, do not write a reducer for it. Treat it as a remote cache entry with an explicit staleness policy, and let a dedicated query engine own the lifecycle.
+If yes, do not write a reducer for it. Give it a query key and an explicit `staleTime`, and let a query cache (TanStack Query, SWR, Apollo Client or RTK Query) own fetching, refetching and invalidation.
+
+The answer changes in two cases. A copy of server data that the user is editing, such as a form draft, becomes client state until it is submitted. And an application whose core is a large client-only document, such as a visual design tool or a music production app, keeps a client state manager for that document and uses a query cache only for what it loads from and saves to the server.
