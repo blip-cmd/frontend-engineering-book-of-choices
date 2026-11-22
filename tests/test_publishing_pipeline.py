@@ -34,7 +34,7 @@ class TestPublishingPipeline(unittest.TestCase):
         self.assertIn("Where Code Runs", content)
         self.assertIn("The Reactivity Dilemma", content)
         self.assertIn("Content-First Publishing", content)
-        self.assertIn("The 15 Deadly Frontend Architectural Anti-Patterns", content)
+        self.assertIn("15 Frontend Architecture Anti-Patterns", content)
 
         # Invariant: Zero em dashes
         self.assertNotIn("—", content, "Compiled Typst must contain zero unicode em dashes")

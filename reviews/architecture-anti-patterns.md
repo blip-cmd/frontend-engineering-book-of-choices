@@ -1,0 +1,124 @@
+---
+page: book/10_appendices/architecture_anti_patterns.md
+verified: 2026-11-22
+---
+
+# Claim Ledger: Appendix A, 15 Frontend Architecture Anti-Patterns and Their Fixes
+
+> Every factual claim on the page, the primary source it rests on, and the result of two independent checks: the author pass that rewrote the page, and a separate verifier pass that did not write it. See [CONTENT_STANDARDS.md](../CONTENT_STANDARDS.md) for the process.
+
+**Brief.** For a tech lead reviewing a frontend codebase or a design proposal. The page helps them decide which common architecture patterns to reject and what to use instead. Thesis (unchanged from the draft): a short list of known failure modes (server data in client stores, Effect waterfalls, whole-page hydration, Context for fast state, runtime CSS-in-JS, unsanitized HTML, premature micro-frontends, tokens in localStorage, unsized media, main-thread computation, clock-based merging, DOM sprawl, unload analytics, unchecked casts, per-event re-renders) each has a documented fix. All 15 anti-patterns were kept; one recommendation was changed because a primary source contradicts it (row 46).
+
+**History.** The AI-generated draft was titled "The 15 Deadly Frontend Architectural Anti-Patterns". Among its errors: it recommended throttling scroll listeners with `requestAnimationFrame` (MDN calls this "useless"), described "synchronous `fetch()`" (fetch has no synchronous mode; the synchronous request MDN describes is `XMLHttpRequest`), said heavy work "drops" INP (INP rises), claimed clock drift "guarantees" data loss and called CRDTs "mathematically proven", said a cast leads the app to "crash silently", attributed the "Page Unresponsive" prompt to operating systems, and gave unsourced quantities ("multi-megabyte", "10 MB CSV", "5,000 rows", "10-person team into 6 micro-frontends", "dozens of re-renders per second", "hundreds of milliseconds"). It recommended `SameSite=Lax`, where Appendix C (agent-verified) prefers `Strict`. It pinned no versions and cited no sources. This pass rewrote every entry against primary sources and added a "When it does not apply" exception where one is sourced or labelled as the book's reasoning.
+
+---
+
+## 1. Author pass (2026-11-22)
+
+Sources were downloaded with `curl` in the same session and quotes were matched against the page text (allowing for typographic quotes). Versions come from `npm view <name> version` on 2026-11-22.
+
+| # | Claim | Primary source | Result |
+| :--- | :--- | :--- | :--- |
+| 1 | RTK Query is "designed to simplify common cases for loading data in a web application, eliminating the need to hand-write data fetching & caching logic yourself" | [RTK Query overview](https://redux-toolkit.js.org/rtk-query/overview) | verified (quote) |
+| 2 | TanStack Query removes connectors, action creators, middlewares, reducers, loading/error/result states; "TanStack Query is not a replacement for local/client state management"; "like a visual designer or music production application" | [TanStack Query: Does this replace client state?](https://tanstack.com/query/latest/docs/framework/react/guides/does-this-replace-client-state) | verified (quote); exception added |
+| 3 | Draft: client stores cause "memory duplication" and "hundreds of lines of useless boilerplate" | none | removed; replaced by rows 1 and 2 |
+| 4 | "Fetching directly in Effects makes it easy to create 'network waterfalls'..." full quote; Effects "don't run on the server" | [react.dev: useEffect](https://react.dev/reference/react/useEffect) | verified (quote) |
+| 5 | "If you use a framework, use its built-in data fetching mechanism"; client caches TanStack Query, useSWR, React Router; "You can continue fetching data directly in Effects if neither of these approaches suit you"; `let ignore = false` cleanup pattern | react.dev: useEffect | verified (quote) |
+| 6 | React Router framework mode "runs matched route loaders in parallel" | [React Router: Data Loading](https://reactrouter.com/start/framework/data-loading) | verified (quote); replaces draft's "Remix / Next.js" |
+| 7 | Relay fragments "let each component declare its own data needs independently, while retaining the efficiency of a single query" | [Relay: Fragments](https://relay.dev/docs/tutorial/fragments-1/) (v21.0.1 docs) | verified (quote); replaces draft's "hoist queries using GraphQL fragments" |
+| 8 | SSR pages "can appear to be loaded and interactive, but can't actually respond to input until the client-side scripts for components are executed and event handlers have been attached"; the "primary downside" of SSR with rehydration "can have a significant negative impact on TBT and INP, even if it improves FCP" | [web.dev: Rendering on the Web](https://web.dev/articles/rendering-on-the-web) | verified (quote); corrects draft's "clicks are dropped" |
+| 9 | Draft: "multi-megabyte JavaScript bundle on budget mobile devices"; "Uncanny Valley" heading | none | removed |
+| 10 | Astro renders every UI component "to just HTML & CSS, stripping out all client-side JavaScript automatically" | [Astro: Islands](https://docs.astro.build/en/concepts/islands/) | verified (quote) |
+| 11 | React Server Components render ahead of time in a separate environment; imported libraries "Not included in bundle" | [react.dev: Server Components](https://react.dev/reference/rsc/server-components) | verified (quote) |
+| 12 | "React automatically re-renders all the children that use a particular context starting from the provider that receives a different value"; "Skipping re-renders with memo does not prevent the children receiving fresh context values" | [react.dev: useContext](https://react.dev/reference/react/useContext) | verified (quote); draft's "and their entire subtrees" and "destroying frame rates" removed |
+| 13 | "Extract components and pass JSX as children to them"; context use cases: theming, current account, routing, managing state | [react.dev: Passing Data Deeply with Context](https://react.dev/learn/passing-data-deeply-with-context) | verified (quote) |
+| 14 | Jotai "was born to solve extra re-render issues in React"; "optimize renders based on atom dependency" | [Jotai docs: Comparison (GitHub)](https://github.com/pmndrs/jotai/blob/main/docs/basics/comparison.mdx) | verified (quote). jotai.org returned a domain-parking page on 2026-11-22, so the GitHub copy of the docs is cited |
+| 15 | Preact Signals: a signal "can be updated without re-rendering any components"; only components reading `.value` update | [Preact: Signals](https://preactjs.com/guide/v10/signals/) | verified (quote); consistent with the Core Web Vitals guide |
+| 16 | React does not recommend runtime `<style>` injection: "forces the browser to recalculate the styles a lot more often", "can be very slow if it happens at the wrong time in the React lifecycle", first problem "not solvable"; "CSS files for static styles, inline styles for dynamic styles" | [react.dev: useInsertionEffect](https://react.dev/reference/react/useInsertionEffect) | verified (quote); replaces draft's "blocks the browser CSSOM parser" and "measurable CPU jank" (unsourced) |
+| 17 | Next.js warns CSS-in-JS with Server Components and streaming needs library support for concurrent rendering; Emotion listed as working on support | [Next.js: CSS-in-JS](https://nextjs.org/docs/app/guides/css-in-js) (docs for 16.4.6) | verified (quote); replaces draft's "breaks streaming HTML" |
+| 18 | styled-components in maintenance mode (March 17, 2025); "For new projects, I would not recommend adopting styled-components or most other css-in-js solutions"; "will continue to be available with occasional bugfixes and misc improvements to support the existing user base" | [OpenCollective: Thank you](https://opencollective.com/styled-components/updates/thank-you) | verified (quote); consistent with the Chapter 6 ledger |
+| 19 | Draft: StyleX, Panda CSS, CSS Modules are "zero-runtime" | Chapter 6 ledger (StyleX and Panda document a small runtime) | reworded to "build time" |
+| 20 | `dangerouslySetInnerHTML`: "If the HTML inside isn't trusted (for example, if it's based on user data), you risk introducing an XSS vulnerability" | [react.dev: Common components](https://react.dev/reference/react-dom/components/common) | verified (quote) |
+| 21 | `DOMPurify.sanitize(dirty)`; post-processing and changing the markup context defeat sanitization; on the server DOMPurify "requires a DOM to be present", jsdom recommended | [DOMPurify README](https://github.com/cure53/DOMPurify) | verified (quote); draft's "Always" without the post-processing caveat corrected |
+| 22 | Micro-frontend costs: duplicated dependencies ("download React n times"), environment differences ("is broken, or behaves differently when we deploy to production"), CSS "is inherently global", "more repositories, more tools, more build/deploy pipelines, more servers, more domains"; opening sentence about "many teams" | [Cam Jackson, Micro Frontends (martinfowler.com)](https://martinfowler.com/articles/micro-frontends.html) | verified (quote); replaces draft's "zero business upside" |
+| 23 | Module Federation `shared` with `singleton: true` allows one version of a shared module | [Module Federation: shared](https://module-federation.io/configure/shared) | verified |
+| 24 | Draft: "10-person frontend engineering team ... 6 federated micro-frontends" | none | removed; made generic ("one team") |
+| 25 | pnpm "has built-in support for monorepos"; Turborepo "is designed for scaling monorepos" | [pnpm: Workspaces](https://pnpm.io/workspaces); [Turborepo docs](https://turborepo.dev/docs) | verified (quote); Nx dropped (not checked this pass); consistent with the enterprise B2B playbook |
+| 26 | "Do not store session identifiers in local storage as the data is always accessible by JavaScript" | [OWASP HTML5 Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html) | verified (quote) |
+| 27 | `HttpOnly` "Forbids JavaScript from accessing the cookie"; the cookie "will still be sent with JavaScript-initiated requests" | [MDN: Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie) | verified (quote); limit added |
+| 28 | Draft: `SameSite=Lax` | Appendix C (agent-verified, OWASP Session Management) | **corrected** to "explicit `SameSite` (`Strict` preferred)" for consistency |
+| 29 | Layout-shift causes include "images or videos with unknown dimensions"; shifts can make users "click the wrong link or button"; good CLS is 0.1 or less at the 75th percentile of page loads | [web.dev: CLS](https://web.dev/articles/cls) | verified (quote) |
+| 30 | "Always include width and height size attributes on your images and video elements. Alternatively, reserve the required space with CSS aspect-ratio or similar" | [web.dev: Optimize CLS](https://web.dev/articles/optimize-cls) | verified (quote); draft's "massive CLS penalties" removed |
+| 31 | "The main thread can only process one task at a time"; long task is longer than 50 ms; "the user interface will feel unresponsive"; yielding to the main thread | [web.dev: Optimize long tasks](https://web.dev/articles/optimize-long-tasks) | verified (quote) |
+| 32 | Good INP is 200 ms or less at the 75th percentile | [web.dev: INP](https://web.dev/articles/inp) | verified; corrects draft's "drops INP" |
+| 33 | Draft: "Parsing 10 MB CSV files"; "causes operating systems to prompt 'Page Unresponsive'"; "embedded database queries" | none | removed or made qualitative |
+| 34 | Web Workers run scripts in "background threads", "can perform tasks without interfering with the user interface", "can't directly manipulate the DOM" | [MDN: Using Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) | verified (quote) |
+| 35 | Whole-record last-write-wins on client clocks loses concurrent edits; a fast clock wins every conflict | none (consistent with the agent-verified collaborative canvas playbook) | labelled as the book's reasoning; draft's "guarantees silent data loss" removed |
+| 36 | Yjs is "A CRDT framework" that supports "offline editing" | [Yjs README](https://github.com/yjs/yjs) | verified (quote) |
+| 37 | Automerge "last writer wins" is "based on the internal ID of the operation, not a wall clock time"; `Automerge.getConflicts()` | [Automerge: Conflicts](https://automerge.org/docs/reference/documents/conflicts/) | verified (quote); draft's "mathematically proven" removed |
+| 38 | Large DOM: "the browser must constantly recompute the position and styling of nodes"; query selectors can hold many node references; Lighthouse warns above about 800 body nodes; audit moved into the "Optimize DOM size" insight in Lighthouse 13 | [Chrome for Developers: Avoid an excessive DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size) | verified (quote); draft's "5,000 raw table rows" made qualitative |
+| 39 | TanStack Virtual is "a headless UI utility for virtualizing long lists" | [TanStack Virtual: Introduction](https://tanstack.com/virtual/latest/docs/introduction) | verified (quote) |
+| 40 | Virtualization "keeps the DOM small by only rendering the items that are visible in the scroll viewport" plus overscan; "not a replacement for server-side pagination, filtering, or sorting"; "For small tables, normal rendering is simpler and usually preferable" | [TanStack Table: Virtualization](https://tanstack.com/table/latest/docs/framework/react/guide/virtualization) | verified (quote); exception added |
+| 41 | Rows outside the viewport cannot be found with find-in-page | follows from row 40 | book's reasoning (consistent with the enterprise B2B playbook) |
+| 42 | Synchronous XHR workarounds "block unloading the document, which slows down navigation to the next page"; unload events unreliable ("especially on mobile, the browser will not fire these events"); `visibilitychange` + `sendBeacon`; sent "without delaying unload or the next navigation"; POST; about 64 KiB; Baseline widely available since April 2018 | [MDN: sendBeacon](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon) | verified (quote); corrects draft's "synchronous `fetch()`" and its use of `unload`/`beforeunload` |
+| 43 | Chrome "has stopped firing unload events by default"; `unload` listeners can keep pages out of the bfcache | [MDN: unload event](https://developer.mozilla.org/en-US/docs/Web/API/Window/unload_event) | verified (quote) |
+| 44 | `keepalive`: browser "will not abort the associated request if the page that initiated it is unloaded"; body limited to 64 kibibytes | [MDN: RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/RequestInit) | verified (quote) |
+| 45 | "Because type assertions are removed at compile-time, there is no runtime checking associated with a type assertion. There won't be an exception or null generated if the type assertion is wrong" | [TypeScript: Everyday Types](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html) | verified (quote); corrects draft's "crashes silently" (a wrong cast produces no error at the cast); unchecked `"7" + 1` gives `"71"`, run with Node 24.18.1 |
+| 46 | Draft: "Throttle listeners using `requestAnimationFrame`"; MDN: throttling scroll with `requestAnimationFrame()` "is useless because animation frame callbacks are fired at the same rate as scroll event handlers"; scroll handlers "shouldn't execute computationally expensive operations such as DOM modifications" | [MDN: scroll event](https://developer.mozilla.org/en-US/docs/Web/API/Document/scroll_event) | **recommendation changed**: throttle with a timer; draft's "dozens of re-renders per second" removed |
+| 47 | `IntersectionObserver` observes intersections asynchronously, replacing handlers that call `getBoundingClientRect()` on the main thread; callback runs on the main thread; Baseline widely available since March 2019 | [MDN: Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) | verified (quote) |
+| 48 | `ResizeObserver` reports element size changes; Baseline widely available since July 2020 | [MDN: ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) | verified |
+| 49 | Zod `.parse()` returns "a strongly-typed deep clone of the input", throws `ZodError`; `.safeParse()` avoids try/catch | [Zod: Basic usage](https://zod.dev/basics) | verified (quote) |
+| 50 | Valibot "has no dependencies and can run in any JavaScript environment" | [Valibot: Introduction](https://valibot.dev/guides/introduction/) | verified (quote) |
+| 51 | Zod example prints `Bad API response at id: Invalid input: expected number, received string` | Node 24.18.1 run with `zod` 4.6.7 (ES module) | verified (run) |
+| 52 | Versions: `@tanstack/react-query` 5.108.2, `swr` 2.5.1, `@reduxjs/toolkit` 2.15.0, `react-router` 8.5.2, `astro` 7.4.13, `jotai` 3.0.2, `tailwindcss` 4.3.5, `@stylexjs/stylex` 0.19.2, `@pandacss/dev` 2.6.0, `dompurify` 3.4.18, `turbo` 2.11.13, `yjs` 13.6.33, `@automerge/automerge` 3.5.0, `@tanstack/react-virtual` 3.14.26, `zod` 4.6.7, `valibot` 1.5.0; React 19 (`react` 19.3.1), Next.js 16.4.6 | `npm view <name> version` | verified |
+
+## 2. Independent verifier pass (2026-11-22)
+
+A separate agent that did not write the page extracted 96 claims from it independently (quotes, dates, versions, thresholds, Baseline statuses, API behaviour and code output) and checked each against its cited source, fetched in this session with `curl -sL` (HTML stripped to text, typographic quotes normalised, every quote searched verbatim and read in context). Versions were checked with `npm view <name> version`.
+
+**Verdict: PASS.** 0 UNSUPPORTED remain; 5 PARTIAL claims were corrected; one overstated qualifier and two sentences with no checkable claim were deleted (about 34 words removed; the quote-matching rewordings added about 20); every number on the page has a source; `python pipelines/scripts/audit_repo_standards.py` passes with no warning for this page.
+
+Spot results for the items flagged for special attention:
+
+* Scroll throttling: MDN scroll event says throttling with `requestAnimationFrame()` "is useless because animation frame callbacks are fired at the same rate as scroll event handlers. Instead, you must measure the timeout yourself, such as by using `setTimeout()`", and its example throttles with a 20 ms `setTimeout`. SUPPORTED.
+* Exit analytics: MDN sendBeacon lists the synchronous `XMLHttpRequest`, `<img>` and no-op-loop workarounds, then "All these methods block unloading the document"; "the most reliable way" is `visibilitychange` with `visibilityState === "hidden"`; "about 64 KiB"; POST. MDN unload: "Chrome has stopped firing unload events by default"; some browsers "will not place pages in the bfcache if they have unload listeners". MDN RequestInit `keepalive` quote and "limited to 64 kibibytes" verbatim; methods other than POST and customised request properties are the stated difference. SUPPORTED.
+* web.dev: INP good "200 milliseconds or less" and CLS "0.1 or less", both at the 75th percentile of page loads; long task "longer than 50 milliseconds"; Rendering on the Web hydration quotes verbatim, "primary downside of server-side rendering with rehydration". SUPPORTED, and consistent with the Core Web Vitals guide.
+* Cookies: MDN Set-Cookie `HttpOnly` "Forbids JavaScript from accessing the cookie" and "will still be sent with JavaScript-initiated requests" verbatim; OWASP HTML5 quote verbatim. "Explicit `SameSite` (`Strict` preferred)" matches Appendix C ("set `Strict` (preferred) or `Lax` explicitly"). SUPPORTED.
+* useEffect: "don't run on the server", the waterfall quote, "If you use a framework, use its built-in data fetching mechanism" (source has a link break after "framework"), TanStack Query, useSWR and React Router, "You can continue fetching data directly in Effects if neither of these approaches suit you" and `let ignore = false` all present on react.dev useEffect. SUPPORTED.
+* Jotai: jotai.org returned a Namecheap "Domain registration has expired" page on 2026-11-22; the GitHub `docs/basics/comparison.mdx` contains both quotes verbatim. Same citation as the agent-verified Chapter 3 and reactivity essay. SUPPORTED.
+* styled-components: "Thank you" published March 17, 2025 (`publishedAt` 2025-03-17T20:27:47Z); both quotes verbatim.
+* Versions, all matching the page: @tanstack/react-query 5.108.2, swr 2.5.1, @reduxjs/toolkit 2.15.0, react-router 8.5.2, astro 7.4.13, jotai 3.0.2, tailwindcss 4.3.5, @stylexjs/stylex 0.19.2, @pandacss/dev 2.6.0, dompurify 3.4.18, turbo 2.11.13, yjs 13.6.33, @automerge/automerge 3.5.0, @tanstack/react-virtual 3.14.26, zod 4.6.7, valibot 1.5.0, react 19.3.1; Next.js CSS-in-JS docs show 16.4.6.
+
+Edits made (rewording to match the source, or deletion; nothing added):
+
+| # | Where | Verdict | Edit |
+| :--- | :--- | :--- | :--- |
+| V1 | Intro | PARTIAL: "a pattern that official documentation ... advises against" does not hold for entry 7 (martinfowler.com lists costs, it is not official docs) or entry 11 (the book's reasoning) | Deleted the qualifier; now "Each entry names a pattern, the mechanism ..." |
+| V2 | Entry 5, styled-components | PARTIAL: "put the project in maintenance mode" stretches the post, which says it "as a project is in \"maintenance mode\"" | Reworded to the exact quote (same wording as the agent-verified Chapter 6) |
+| V3 | Entry 5, fix | PARTIAL: React's recommendation is addressed to CSS-in-JS users ("If you use CSS-in-JS, we recommend a combination of the first two approaches ...") | Reworded to "For CSS-in-JS users, React recommends \"a combination of the first two approaches (CSS files for static styles, inline styles for dynamic styles)\"", as in the Chapter 6 verifier fix |
+| V4 | Entries 13 and 15, Baseline dates for `sendBeacon`, `IntersectionObserver`, `ResizeObserver` | PARTIAL: MDN's date is when each feature became "available across browsers", not the date it became widely available | Reworded to "Baseline widely available, available across browsers since <month year>" (the wording used in Chapter 6 and Appendix C) |
+| V5 | Entry 7, Module Federation | NO SOURCE judgment: "but that is configuration every build has to get right" | Deleted |
+| V6 | Entry 11, fix | NO SOURCE recommendation with no cost stated: "Another option is to let the server order writes per property." | Deleted |
+
+Claims accepted as NO SOURCE explanatory background (no numbers): a script on the page can read a token from `localStorage`; injected script can still act as the user with an `HttpOnly` cookie but cannot copy the token out (follows from the MDN quote); unsized media cannot have space reserved; a wrong value from a cast fails later; rows outside a virtualized viewport cannot be reached by find-in-page; every Context consumer runs again whether or not the part of the value it uses changed. All other judgment is labelled on the page as the book's reasoning.
+
+Code checks (temp folder outside the repo, Node 24.18.1, `zod` 4.6.7 installed there):
+
+* The Zod example, run as an ES module, prints `Bad API response at id: Invalid input: expected number, received string` and exits 0, as the page says. Tricky inputs: `{"id":7,...}` prints `8`; a missing `id` reports `received undefined`; `null` reports `expected object, received null` (empty path).
+* The unchecked case: `JSON.parse('{"id":"7"}').id + 1` evaluates to `"71"`, as the page says.
+
+## 3. Known omissions (follow-up content, not errors)
+
+* No code example for entries other than 14. Entry 13 (`visibilitychange` + `sendBeacon`) and entry 15 (timer throttle) would benefit from short browser fragments.
+* `book/README.md` line 40 still links this page with the old title ("The 15 Deadly Frontend Architectural Anti-Patterns"); the author pass may not edit that file.
+* Anti-patterns a fuller list could add, each needing its own sourced entry: barrel files and unbounded bundle growth, layout thrashing (reading layout after writes), memory leaks from uncleaned subscriptions, third-party tags on the critical path, and `key={index}` in reordered lists.
+* No measured cost figures (hydration time, Context re-render cost, DOM size versus INP). No primary benchmark with tool and versions was used in this pass.
+* Nx as a monorepo alternative was dropped rather than verified.
+
+## 4. Scores (agent assessment)
+
+| D1 | D2 | D3 | D4 | D5 | D6 | D7 | D8 | D9 | D10 | Total |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 1 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 1 | 2 | **18** |
+
+D1 is 1 because each entry is a single rejection with one fix, not a weighed decision; D9 is 1 because only entry 14 has a runnable example. All gates pass except G8 (human accountability), which an `agent-verified` status would disclose instead.
