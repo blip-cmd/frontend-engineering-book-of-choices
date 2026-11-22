@@ -22,3 +22,4 @@ Ledgers are written by the verification process in [CONTENT_STANDARDS.md](../CON
 | Chapter 2: The Reactivity Dilemma | agent-verified | 2026-11 | 2027-05 | [ledger](the-reactivity-dilemma.md) |
 | Chapter 5: Design Engineering and UI Architecture | agent-verified | 2026-11 | 2027-05 | [ledger](design-engineering-and-ui.md) |
 | Chapter 6: Styling and Presentation | agent-verified | 2026-11 | 2027-05 | [ledger](styling-and-presentation.md) |
+| Chapter 4: The Networking Contract | agent-verified | 2026-11 | 2027-05 | [ledger](the-networking-contract.md) |
