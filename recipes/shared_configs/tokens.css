@@ -1,0 +1,70 @@
+/* SPDX-License-Identifier: MIT */
+/*
+ * Shared design tokens for Tailwind CSS 4.x (CSS-first configuration).
+ * Import this file after Tailwind in your main stylesheet:
+ *
+ *   @import "tailwindcss";
+ *   @import "./tokens.css";
+ *
+ * Semantic tokens are plain CSS custom properties on :root, overridden by
+ * the .dark class. @theme inline maps them to Tailwind theme variables, so
+ * utilities such as bg-background or rounded-lg read var(--background)
+ * directly on the element and pick up a .dark class set on any ancestor.
+ */
+
+/* dark: utilities apply when .dark is set on the element or an ancestor */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Light theme (default) */
+:root {
+  --radius: 0.5rem;
+
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(222.2 84% 4.9%);
+  --primary: hsl(222.2 47.4% 11.2%);
+  --primary-foreground: hsl(210 40% 98%);
+  --secondary: hsl(210 40% 96.1%);
+  --secondary-foreground: hsl(222.2 47.4% 11.2%);
+  --border: hsl(214.3 31.8% 91.4%);
+  --input: hsl(214.3 31.8% 91.4%);
+  --ring: hsl(222.2 84% 4.9%);
+}
+
+/* Dark theme: only the semantic values change */
+.dark {
+  color-scheme: dark;
+
+  --background: hsl(222.2 84% 4.9%);
+  --foreground: hsl(210 40% 98%);
+  --primary: hsl(210 40% 98%);
+  --primary-foreground: hsl(222.2 47.4% 11.2%);
+  --secondary: hsl(217.2 32.6% 17.5%);
+  --secondary-foreground: hsl(210 40% 98%);
+  --border: hsl(217.2 32.6% 17.5%);
+  --input: hsl(217.2 32.6% 17.5%);
+  --ring: hsl(212.7 26.8% 83.9%);
+}
+
+/* Tailwind theme variables: --color-* and --radius-* generate utilities */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+/* Tailwind 4 has no container config: extend the utility instead */
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  max-width: 1400px;
+}
