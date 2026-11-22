@@ -1,5 +1,7 @@
 # Architectural Methodology: Micro-Frontends and Module Federation
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Identifier:** `micro-frontends-and-module-federation`
 * **Pioneers & Key Implementers:** Zack Jackson (Module Federation), Martin Fowler, Luca Mezzalira, Spotify, DAZN, IKEA, Amazon
 * **Core Mechanisms:** Independent deployments, runtime script orchestration, Webpack / Rspack Module Federation, single-spa orchestrator, iframe / Web Component encapsulation

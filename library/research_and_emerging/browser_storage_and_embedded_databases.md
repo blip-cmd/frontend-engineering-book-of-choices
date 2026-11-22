@@ -1,5 +1,7 @@
 # Research & Emerging: Embedded Client Databases and Storage Topologies
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Category:** `research_and_emerging`
 * **Status:** Emerging Standard & Production in Specialized Clients
 * **Core Comparison:** LocalStorage vs. IndexedDB vs. OPFS (Origin Private File System) vs. Embedded SQL (SQLite WASM / PGlite)

@@ -1,6 +1,6 @@
-# Research Notes: Index
+# Background Notes (Unverified): Index
 
-> Automatically generated index of the research notes behind the book. Published books are listed separately in [reading_list.md](reading_list.md).
+> Automatically generated index of **unverified background notes** from the book's AI-generated first draft. They are not part of the book and have not been checked against [CONTENT_STANDARDS.md](../CONTENT_STANDARDS.md); the verified chapters in `book/` cite primary sources directly. Published books worth reading are listed in [reading_list.md](reading_list.md).
 
 | Category | Title | Identifier | Author / Source | File Path |
 | :--- | :--- | :--- | :--- | :--- |

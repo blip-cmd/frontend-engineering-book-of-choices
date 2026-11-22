@@ -1,5 +1,7 @@
 # Index: Production Engineering Tech Blogs & Architectural RFCs
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 A curated reference list of high-signal engineering blogs, RFC repositories, and technical writing detailing frontend architecture at scale.
 
 ---

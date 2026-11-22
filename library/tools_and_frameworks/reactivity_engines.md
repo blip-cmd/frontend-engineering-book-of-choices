@@ -1,5 +1,7 @@
 # Reactivity Engines: Virtual DOM vs. Signals vs. Direct AST Compilation
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Category:** `reactivity_engine`
 * **Status:** Industry Standard & Emerging Production
 * **Core Comparison:** React (Virtual DOM) vs. Solid / Preact / Angular / Vue (Fine-Grained Signals) vs. Svelte (Compile-Time AST Reactive Transformation)

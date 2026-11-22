@@ -1,5 +1,7 @@
 # Research & Emerging: WebAssembly (Wasm) and WebGPU in Frontend Architecture
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Category:** `research_and_emerging`
 * **Status:** Production in High-End Applications & Emerging Standard
 * **Core Comparison:** JavaScript V8 Execution vs. Compiled WebAssembly vs. WebGPU Compute Shaders

@@ -1,5 +1,7 @@
 # Testing & QA Strategy: Unit vs. Integration vs. E2E vs. Visual Regression
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Category:** `delivery_and_build`
 * **Status:** Industry Standard & Best Practice
 * **Core Comparison:** Vitest / Jest vs. React Testing Library vs. Playwright / Cypress vs. Storybook / Chromatic vs. MSW (Mock Service Worker)

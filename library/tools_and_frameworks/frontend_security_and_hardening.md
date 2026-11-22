@@ -1,5 +1,7 @@
 # Frontend Security & Hardening: Defending the Client Boundary
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Category:** `delivery_and_build`
 * **Status:** Mandatory Production Standard
 * **Core Topics:** Cross-Site Scripting (XSS), Content Security Policy (CSP), Cross-Site Request Forgery (CSRF), Clickjacking, Dependency Supply-Chain Defense, HTML Sanitization
