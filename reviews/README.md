@@ -23,3 +23,4 @@ Ledgers are written by the verification process in [CONTENT_STANDARDS.md](../CON
 | Chapter 5: Design Engineering and UI Architecture | agent-verified | 2026-11 | 2027-05 | [ledger](design-engineering-and-ui.md) |
 | Chapter 6: Styling and Presentation | agent-verified | 2026-11 | 2027-05 | [ledger](styling-and-presentation.md) |
 | Chapter 4: The Networking Contract | agent-verified | 2026-11 | 2027-05 | [ledger](the-networking-contract.md) |
+| Chapter 8: Local-First and Offline Resilience | agent-verified | 2026-11 | 2027-05 | [ledger](local-first-and-offline-resilience.md) |
