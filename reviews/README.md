@@ -15,3 +15,4 @@ Ledgers are written by the verification process in [CONTENT_STANDARDS.md](../CON
 | Chapter 7: Delivery and Build Pipeline | agent-verified | 2026-11 | 2027-05 | [ledger](delivery-and-build-pipeline.md) |
 | Essay: The 14 KB TCP Slow-Start Budget | agent-verified | 2026-11 | 2027-11 | [ledger](the-14kb-tcp-slow-start-budget.md) |
 | Playbook: Enterprise B2B SaaS and Data Grids | agent-verified | 2026-11 | 2027-05 | [ledger](enterprise-b2b-saas.md) |
+| Playbook: Collaborative Canvas and Document Workspaces | agent-verified | 2026-11 | 2027-05 | [ledger](collaborative-canvas-workspace.md) |
