@@ -1,19 +1,25 @@
 {
   "name": "recipe-content-first-astro",
   "version": "1.0.0",
-  "description": "Production configuration for content-first publishing and documentation based on the Book of Choices",
+  "private": true,
+  "license": "MIT",
+  "description": "Minimal content-first starter: Astro static pages, a Preact island, Tailwind CSS 4 and a Markdown content collection",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "astro check"
   },
   "dependencies": {
-    "@astrojs/preact": "^4.0.0",
-    "@astrojs/tailwind": "^5.1.0",
-    "astro": "^4.15.0",
-    "preact": "^10.24.0",
-    "tailwindcss": "^3.4.10"
+    "@astrojs/preact": "^6.1.6",
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "^7.4.13",
+    "preact": "^11.2.0",
+    "tailwindcss": "^4.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "typescript": "^6.0.3"
   }
 }

@@ -1,23 +1,14 @@
+// @ts-check
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 import preact from '@astrojs/preact';
+import tailwindcss from '@tailwindcss/vite';
 
-// https://astro.build/config
+// https://docs.astro.build/en/reference/configuration-reference/
 export default defineConfig({
-  output: 'static',
-  integrations: [
-    tailwind({
-      applyBaseStyles: true,
-    }),
-    preact({
-      include: ['**/islands/*'],
-    }),
-  ],
-  build: {
-    inlineStylesheets: 'auto',
-  },
-  prefetch: {
-    prefetchAll: true,
-    defaultStrategy: 'viewport',
+  // Replace with your production URL (used for canonical URLs and sitemaps).
+  site: 'https://example.com',
+  integrations: [preact()],
+  vite: {
+    plugins: [tailwindcss()],
   },
 });
