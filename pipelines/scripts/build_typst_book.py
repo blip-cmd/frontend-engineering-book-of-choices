@@ -154,7 +154,7 @@ def build_typst_document():
 #align(center)[
   #text(size: 8pt, fill: rgb("#94a3b8"))[
     Copyright (c) 2026 blip-cmd and contributors. Licensed under CC BY-NC-ND 4.0. \\
-    Every page was verified against primary sources by AI agents; see the claim ledgers at \\
+    Every page is AI-checked against official docs by two separate AI runs, and not yet reviewed by a human expert; see the claim ledgers at \\
     github.com/blip-cmd/frontend-engineering-book-of-choices
   ]
 ]
