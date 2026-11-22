@@ -68,9 +68,13 @@ jobs:
       - name: Pick the page
         id: pick
         if: steps.token.outputs.present == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python pipelines/scripts/next_review.py --github-output "--page=${{ github.event.inputs.page }}"
           mkdir -p .agent-review
+          # Skip pages that an open pull request is already changing.
+          gh pr list --state open --json files --jq '.[].files[].path' > .agent-review/open-pr-files.txt || true
+          python pipelines/scripts/next_review.py --github-output "--page=${{ github.event.inputs.page }}"
           echo "today=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
 
       - name: Author pass

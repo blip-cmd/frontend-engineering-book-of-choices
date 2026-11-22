@@ -8,6 +8,9 @@ Priority:
   2. otherwise the first draft page in pipelines/config/review_queue.json;
   3. otherwise any other draft page not listed in the queue.
 
+Pages listed in .agent-review/open-pr-files.txt (files touched by open pull requests,
+written by the workflow) are skipped, so automation never collides with work in progress.
+
 Prints the page path, or nothing if every page is verified and current.
 With --github-output, also writes `page=` and `slug=` to $GITHUB_OUTPUT.
 """
@@ -38,11 +41,22 @@ def status_of(rel):
     return meta
 
 
-def pick(today=None):
+OPEN_PR_FILES = REPO_ROOT / ".agent-review" / "open-pr-files.txt"
+
+
+def busy_pages():
+    """Files touched by open pull requests, if the workflow listed them."""
+    if not OPEN_PR_FILES.exists():
+        return set()
+    return {line.strip() for line in OPEN_PR_FILES.read_text(encoding="utf-8").splitlines() if line.strip()}
+
+
+def pick(today=None, busy=None):
     this_month = (today or date.today()).strftime("%Y-%m")
     queue = json.loads(QUEUE.read_text(encoding="utf-8"))["queue"]
     pages = content_pages()
-    ordered = [p for p in queue if p in pages] + [p for p in pages if p not in queue]
+    busy = busy_pages() if busy is None else busy
+    ordered = [p for p in queue if p in pages and p not in busy] + [p for p in pages if p not in queue and p not in busy]
 
     for rel in ordered:
         meta = status_of(rel)
