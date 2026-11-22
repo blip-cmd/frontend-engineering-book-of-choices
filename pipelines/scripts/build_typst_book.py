@@ -41,126 +41,34 @@ CHAPTER_SEQUENCE = [
     BOOK_DIR / "10_appendices" / "migration_playbooks.md"
 ]
 
-def format_table_to_typst(table_lines):
-    if len(table_lines) < 2:
-        return ""
-    
-    # Parse header
-    headers = [c.strip() for c in table_lines[0].strip().strip('|').split('|')]
-    num_cols = len(headers)
-    
-    # Skip separator row (table_lines[1])
-    data_rows = []
-    for line in table_lines[2:]:
-        if not line.strip() or not line.strip().startswith('|'):
-            continue
-        cells = [c.strip() for c in line.strip().strip('|').split('|')]
-        # Pad or slice to num_cols
-        while len(cells) < num_cols:
-            cells.append("")
-        data_rows.append(cells[:num_cols])
-        
-    out = []
-    out.append(f"#align(center)[")
-    out.append(f"#table(")
-    out.append(f"  columns: {num_cols},")
-    out.append(f"  stroke: none,")
-    out.append(f"  fill: (col, row) => if row == 0 {{ rgb(\"#f8fafc\") }} else {{ none }},")
-    out.append(f"  table.hline(stroke: 1.2pt + rgb(\"#0f172a\")),")
-    
-    header_cells = ", ".join(f"[* {h} *]" for h in headers)
-    out.append(f"  {header_cells},")
-    out.append(f"  table.hline(stroke: 0.6pt + rgb(\"#475569\")),")
-    
-    for row in data_rows:
-        row_cells = ", ".join(f"[{c}]" for c in row)
-        out.append(f"  {row_cells},")
-        
-    out.append(f"  table.hline(stroke: 1.2pt + rgb(\"#0f172a\"))")
-    out.append(f")")
-    out.append(f"]\n")
-    return "\n".join(out)
+def find_pandoc():
+    """Pandoc 3.x converts the book's GitHub-flavoured Markdown to Typst with correct escaping."""
+    return shutil.which("pandoc")
+
+
+REPO_URL = "https://github.com/blip-cmd/frontend-engineering-book-of-choices/blob/main/"
+RELATIVE_LINK = re.compile(r"\]\((?!https?:|mailto:|#)([^)\s]+)\)")
+
+
+def absolutize_links(md_content, source_path):
+    """Relative links mean nothing inside a PDF: point them at the file on GitHub."""
+    def repl(match):
+        target, _, anchor = match.group(1).partition("#")
+        resolved = (source_path.parent / target).resolve().relative_to(REPO_ROOT).as_posix()
+        return f"]({REPO_URL}{resolved}{'#' + anchor if anchor else ''})"
+    return RELATIVE_LINK.sub(repl, md_content)
+
 
 def convert_markdown_to_typst(md_content):
-    lines = md_content.splitlines()
-    output_lines = []
-    in_code_block = False
-    code_lang = ""
-    code_buffer = []
-    in_table = False
-    table_buffer = []
+    pandoc = find_pandoc()
+    if not pandoc:
+        raise RuntimeError("pandoc 3.x is required to build the PDF source (https://pandoc.org/installing.html).")
+    result = subprocess.run(
+        [pandoc, "--from", "gfm", "--to", "typst", "--wrap=none"],
+        input=md_content, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    return result.stdout
 
-    for line in lines:
-        stripped = line.strip()
-
-        # Handle code blocks
-        if stripped.startswith("```"):
-            if not in_code_block:
-                in_code_block = True
-                code_lang = stripped[3:].strip()
-                code_buffer = []
-            else:
-                in_code_block = False
-                code_str = "\n".join(code_buffer)
-                output_lines.append(f"#block(width: 100%, fill: rgb(\"#f8fafc\"), stroke: 0.5pt + rgb(\"#cbd5e1\"), inset: (x: 10pt, y: 8pt), radius: 4pt)[")
-                output_lines.append(f"```{code_lang}\n{code_str}\n```")
-                output_lines.append(f"]\n")
-            continue
-
-        if in_code_block:
-            code_buffer.append(line)
-            continue
-
-        # Handle tables
-        if stripped.startswith("|") and stripped.endswith("|"):
-            in_table = True
-            table_buffer.append(stripped)
-            continue
-        elif in_table:
-            in_table = False
-            output_lines.append(format_table_to_typst(table_buffer))
-            table_buffer = []
-
-        # Headings
-        if stripped.startswith("# "):
-            heading_text = stripped[2:].strip()
-            output_lines.append(f"\n#pagebreak()\n= {heading_text}\n")
-            continue
-        elif stripped.startswith("## "):
-            heading_text = stripped[3:].strip()
-            output_lines.append(f"\n== {heading_text}\n")
-            continue
-        elif stripped.startswith("### "):
-            heading_text = stripped[4:].strip()
-            output_lines.append(f"\n=== {heading_text}\n")
-            continue
-
-        # Blockquotes
-        if stripped.startswith("> "):
-            quote_text = stripped[2:].strip()
-            output_lines.append(f"#block(width: 100%, fill: rgb(\"#f0f9ff\"), stroke: (left: 3pt + rgb(\"#0284c7\")), inset: (x: 12pt, y: 8pt), radius: 2pt)[#text(style: \"italic\")[{quote_text}]]\n")
-            continue
-
-        # Horizontal rules
-        if stripped == "---":
-            output_lines.append(f"\n#v(0.6em)#line(length: 100%, stroke: 0.4pt + rgb(\"#cbd5e1\"))#v(0.6em)\n")
-            continue
-
-        # Convert basic markdown lists and text formatting
-        processed_line = line
-        
-        # Bold: **text** -> *text*
-        processed_line = re.sub(r'\*\*(.+?)\*\*', r'*\1*', processed_line)
-        
-        # Links: [text](url) -> #link("url")[text]
-        processed_line = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'#link("\2")[\1]', processed_line)
-
-        output_lines.append(processed_line)
-
-    if in_table and table_buffer:
-        output_lines.append(format_table_to_typst(table_buffer))
-
-    return "\n".join(output_lines)
 
 def build_typst_document():
     DIST_DIR.mkdir(parents=True, exist_ok=True)
@@ -208,6 +116,20 @@ def build_typst_document():
 #set par(justify: true, leading: 0.72em)
 #show heading: set text(font: ("Liberation Sans", "Arial"), fill: rgb("#0f172a"))
 
+// Styling for pandoc-generated content
+#let horizontalrule = align(center, line(length: 100%, stroke: 0.4pt + rgb("#cbd5e1")))
+#show heading.where(level: 1): it => { pagebreak(weak: true); it }
+#show link: set text(fill: rgb("#0369a1"))
+#set table(
+  inset: 5pt,
+  stroke: (x, y) => if y == 0 { (top: 1.2pt + rgb("#0f172a"), bottom: 0.6pt + rgb("#475569")) } else { (bottom: 0.3pt + rgb("#e2e8f0")) },
+)
+#show table: set text(size: 8.5pt)
+#show table: set par(justify: false)
+#show raw.where(block: true): block.with(width: 100%, fill: rgb("#f8fafc"), stroke: 0.5pt + rgb("#cbd5e1"), inset: (x: 10pt, y: 8pt), radius: 4pt)
+#show raw: set text(size: 8.5pt)
+#show quote.where(block: true): it => block(width: 100%, fill: rgb("#f0f9ff"), stroke: (left: 3pt + rgb("#0284c7")), inset: (x: 12pt, y: 8pt), radius: 2pt, emph(it.body))
+
 // Title Page
 #v(3cm)
 #align(center)[
@@ -215,7 +137,7 @@ def build_typst_document():
     Frontend Engineering as a Book of Choices
   ]
   #v(0.8cm)
-  #text(size: 14pt, fill: rgb("#475569"))[
+  #text(size: 14pt, fill: rgb("#475569"), hyphenate: false)[
     A Practical Decision Matrix and Architectural Reference for Modern Web Applications
   ]
   #v(1.5cm)
@@ -224,15 +146,16 @@ def build_typst_document():
   ]
   #v(0.4cm)
   #text(size: 9.5pt, fill: rgb("#64748b"))[
-    Production Edition : Version 1.0.0
+    Agent-Verified Edition : November 2026
   ]
 ]
 
 #v(6cm)
 #align(center)[
   #text(size: 8pt, fill: rgb("#94a3b8"))[
-    Copyright (c) 2026 blip-cmd. All rights reserved.
-    Published by The Book of Choices Series.
+    Copyright (c) 2026 blip-cmd and contributors. Licensed under CC BY-NC-ND 4.0. \\
+    Every page was verified against primary sources by AI agents; see the claim ledgers at \\
+    github.com/blip-cmd/frontend-engineering-book-of-choices
   ]
 ]
 
@@ -256,7 +179,7 @@ def build_typst_document():
             continue
         with open(chap_path, "r", encoding="utf-8") as f:
             content = strip_front_matter(f.read())
-        converted = convert_markdown_to_typst(content)
+        converted = convert_markdown_to_typst(absolutize_links(content, chap_path))
         typst_body.append(converted)
 
     full_typst = "\n".join(typst_body)
