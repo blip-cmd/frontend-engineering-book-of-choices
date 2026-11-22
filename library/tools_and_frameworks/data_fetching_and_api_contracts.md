@@ -1,5 +1,7 @@
 # Data Fetching and API Contracts: REST vs. GraphQL vs. tRPC vs. Server Actions
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Category:** `api_contract`
 * **Status:** Industry Standard & Emerging Paradigms
 * **Core Comparison:** REST (OpenAPI) vs. GraphQL (Apollo/Relay) vs. tRPC vs. Server Actions (RSC)

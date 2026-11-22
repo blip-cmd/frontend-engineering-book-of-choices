@@ -65,7 +65,7 @@ The starter configurations live in [recipes/](recipes/).
 ```text
 ├── book/          # The book: chapters 0-8, decision playbooks, appendices (the single source of truth)
 ├── docs/essays/   # Standalone essays drawn from the chapters
-├── library/       # Research notes behind the chapters, plus a further-reading list
+├── library/       # Unverified background notes from the first draft (not part of the book), plus a further-reading list
 ├── site/          # The website (Astro Starlight), generated from book/ and deployed to GitHub Pages
 ├── recipes/       # Starter configurations for each playbook
 ├── bin/           # Node.js decision CLI

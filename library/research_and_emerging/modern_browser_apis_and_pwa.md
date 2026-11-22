@@ -1,5 +1,7 @@
 # Research & Emerging: Modern Browser Primitives & Progressive Web Applications
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Category:** `research_and_emerging`
 * **Status:** Web Standards & Production in Desktop-Class Web Apps
 * **Core Comparison:** Service Workers vs. Web Workers vs. Shared Workers vs. Web Locks vs. BroadcastChannel

@@ -7,3 +7,22 @@ Ledgers are written by the verification process in [CONTENT_STANDARDS.md](../CON
 | Page | Status | Verified | Next check | Ledger |
 | :--- | :--- | :--- | :--- | :--- |
 | Appendix C: Production Frontend Security Hardening Checklist | agent-verified | 2026-11 | 2027-05 | [ledger](appendix-c-frontend-security-checklist.md) |
+| Appendix B: Core Web Vitals Production Triage Guide | agent-verified | 2026-11 | 2027-05 | [ledger](core-web-vitals-triage-guide.md) |
+| Appendix D: Zero-Downtime Migration Playbooks | agent-verified | 2026-11 | 2027-05 | [ledger](migration-playbooks.md) |
+| Essay: Why Server Caches Replace Most Redux Stores | agent-verified | 2026-11 | 2027-05 | [ledger](why-server-caches-replace-most-redux-stores.md) |
+| Chapter 3: State and Cache Topologies | agent-verified | 2026-11 | 2027-05 | [ledger](state-and-cache-topologies.md) |
+| Playbook: High-Frequency Real-Time Telemetry and Financial Dashboards | agent-verified | 2026-11 | 2027-05 | [ledger](high-frequency-realtime-dashboard.md) |
+| Chapter 7: Delivery and Build Pipeline | agent-verified | 2026-11 | 2027-05 | [ledger](delivery-and-build-pipeline.md) |
+| Essay: The 14 KB TCP Slow-Start Budget | agent-verified | 2026-11 | 2027-11 | [ledger](the-14kb-tcp-slow-start-budget.md) |
+| Playbook: Enterprise B2B SaaS and Data Grids | agent-verified | 2026-11 | 2027-05 | [ledger](enterprise-b2b-saas.md) |
+| Playbook: Collaborative Canvas and Document Workspaces | agent-verified | 2026-11 | 2027-05 | [ledger](collaborative-canvas-workspace.md) |
+| Playbook: Content-First Publishing and Documentation | agent-verified | 2026-11 | 2027-05 | [ledger](content-first-publishing.md) |
+| Playbook: Low-Latency Global E-Commerce Storefronts | agent-verified | 2026-11 | 2027-05 | [ledger](low-latency-ecommerce.md) |
+| Chapter 1: Where Code Runs | agent-verified | 2026-11 | 2027-05 | [ledger](where-code-runs.md) |
+| Chapter 2: The Reactivity Dilemma | agent-verified | 2026-11 | 2027-05 | [ledger](the-reactivity-dilemma.md) |
+| Chapter 5: Design Engineering and UI Architecture | agent-verified | 2026-11 | 2027-05 | [ledger](design-engineering-and-ui.md) |
+| Chapter 6: Styling and Presentation | agent-verified | 2026-11 | 2027-05 | [ledger](styling-and-presentation.md) |
+| Chapter 4: The Networking Contract | agent-verified | 2026-11 | 2027-05 | [ledger](the-networking-contract.md) |
+| Chapter 8: Local-First and Offline Resilience | agent-verified | 2026-11 | 2027-05 | [ledger](local-first-and-offline-resilience.md) |
+| Chapter 0: The Calculus of Choices | agent-verified | 2026-11 | 2027-11 | [ledger](the-calculus-of-choices.md) |
+| Appendix A: 15 Frontend Architecture Anti-Patterns and Their Fixes | agent-verified | 2026-11 | 2027-05 | [ledger](architecture-anti-patterns.md) |

@@ -1,5 +1,7 @@
 # State and Cache Topologies: Client State Stores vs. Remote Server Caches
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Category:** `state_and_cache`
 * **Status:** Industry Standard
 * **Core Comparison:** Global Store (Zustand, Redux Toolkit, Pinia) vs. Server Cache (TanStack Query, SWR, Apollo/Relay) vs. Atomic State (Jotai, Nano Stores) vs. Fine-Grained Signals

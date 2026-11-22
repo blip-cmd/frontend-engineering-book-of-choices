@@ -1,5 +1,7 @@
 # Architectural Methodology: Server-Driven UI (SDUI)
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Identifier:** `server-driven-ui`
 * **Pioneers & Key Implementers:** Airbnb (GhostPlatform / Epoxy), Lyft, Spotify, DoorDash, Uber
 * **Core Mechanisms:** JSON-defined component trees, client-side rendering engines, dynamic layout orchestration, app-store update bypass

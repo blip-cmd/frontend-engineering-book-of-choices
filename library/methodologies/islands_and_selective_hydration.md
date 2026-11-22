@@ -1,5 +1,7 @@
 # Architectural Methodology: Islands Architecture and Selective Hydration
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Identifier:** `islands-and-selective-hydration`
 * **Pioneers & Key Implementers:** Jason Miller, Astro Core Team, Fresh (Deno), Marko (eBay)
 * **Core Mechanisms:** Static HTML default, partial hydration, independent component roots, client directives (`client:load`, `client:visible`, `client:idle`)

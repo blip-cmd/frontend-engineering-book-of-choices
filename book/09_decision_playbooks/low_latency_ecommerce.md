@@ -1,49 +1,60 @@
 ---
-status: draft
+status: agent-verified
 ai_involvement: drafted
-last_verified:
-verified_against:
-review_by:
+last_verified: 2026-11
+verified_against: next 16.4.6, react 19.3.1, react-router 8.5.2, @shopify/hydrogen 2026.10.3 (Hydrogen 2026-10 docs), tailwindcss 4.3.5, @qwik.dev/partytown 1.0.5, remix 3.3.0; web.dev Core Web Vitals articles, MDN Cache-Control and Vary, RFC 5861, Fastly and Cloudflare purge docs, Partytown docs, Deloitte Milliseconds Make Millions (2020)
+review_by: 2027-05
 reviewers:
+ledger: reviews/low-latency-ecommerce.md
 ---
 
 # Decision Playbook: Low-Latency Global E-Commerce Storefronts
 
-> Recommended Architecture for: Direct-to-Consumer (DTC) Brands, Global Retail Storefronts, and High-Conversion Marketplaces.
+> For a tech lead choosing the rendering, caching and script strategy of a direct-to-consumer brand store, global retail storefront or marketplace, where catalog pages are public and the same for most shoppers, and traffic spikes during promotions. Every recommendation below is this book's position unless a source is linked; sources were checked on 2026-11-21.
 
 ---
 
-## 1. The Archetype Profile
+## 1. When this playbook applies
 
-* **Primary Success Metric:** Sub-second global Largest Contentful Paint (LCP < 1.0s), zero layout shift (CLS = 0.0), instant product variant switching, and sub-100ms checkout initiation. Every 100ms of latency reduction directly correlates with 1% to 2% higher conversion rates.
-* **Traffic Pattern:** Global consumer traffic with sudden massive promotional surges (Black Friday, flash sales, influencer campaigns).
-* **Network & Device Spectrum:** 70% to 80% mobile shoppers navigating on erratic cellular connections and mid-tier smartphones.
+* **Primary success metric (position):** product and collection pages meet all three Core Web Vitals "good" thresholds at the 75th percentile of page loads, segmented by mobile and desktop. web.dev rates Largest Contentful Paint (LCP) good at 2.5 seconds or less ([web.dev: LCP](https://web.dev/articles/lcp)), Cumulative Layout Shift (CLS) good at 0.1 or less ([web.dev: CLS](https://web.dev/articles/cls)), and Interaction to Next Paint (INP) good at 200 milliseconds or less ([web.dev: INP](https://web.dev/articles/inp)). Time to First Byte (TTFB) is a diagnostic, not a Core Web Vital; web.dev's "rough guide" is 0.8 seconds or less ([web.dev: TTFB](https://web.dev/articles/ttfb)).
+* **Why speed is worth paying for:** a Deloitte study commissioned by Google analysed about four weeks of mobile data from 37 brands in Europe and the US and observed "an 8.4% increase in conversions" for retail sites associated with a 0.1 second improvement in mobile site speed ([Deloitte: Milliseconds Make Millions, 2020](https://www.thinkwithgoogle.com/_qs/documents/9757/Milliseconds_Make_Millions_report_hQYAbZJ.pdf)). The report says it measured correlation in natural speed fluctuations, not a controlled experiment, and the report promotes Google's own speed tools, so treat the figure as indicative, not as a forecast for your store.
+* **Traffic pattern:** shoppers spread across regions, with sudden surges during promotions (sales events, flash sales, social media campaigns), which is the case where serving pages from a CDN cache instead of the origin matters most.
+* **Network and devices (position):** plan for mid-range phones on unreliable mobile networks. Check your own analytics for the real mobile share before setting budgets.
 
 ---
 
-## 2. The Recommended Architectural Stack
+## 2. Recommended stack: cached HTML near the shopper, live data streamed in
 
-| Layer | Recommended Choice | Rationale |
+| Layer | Recommended choice (position) | Rationale and source |
 | :--- | :--- | :--- |
-| **Execution Boundary** | **Edge-Rendered SSR with Selective ISR (Remix / Next.js / Hydrogen)** | Pre-renders product pages and collections at CDN edge nodes adjacent to the consumer. Delivers pre-warmed HTML in a single network round trip. |
-| **Dynamic Cart State** | **Optimistic Local Cache + Server Action Reconciliation** | Adding an item to the shopping bag updates the local UI immediately (within 16ms), updating the cart drawer without waiting for network confirmation. Background sync validates inventory. |
-| **Styling & Assets** | **Tailwind CSS + AVIF / WebP Image Optimization** | Critical CSS is inlined into the document head to avoid render-blocking requests. Product imagery is automatically resized and delivered in modern AVIF formats with explicit `aspect-ratio` to eliminate Cumulative Layout Shift (CLS). |
-| **Edge Cache Strategy** | **Stale-While-Revalidate with Tagged Cache Invalidation** | Product pages are served instantly from the edge cache. When inventory or pricing changes in the backend PIM/ERP, targeted cache tags (`surrogate-key` / `cache-tags`) purge only the modified SKU globally in milliseconds. |
-| **Third-Party Script Isolation**| **Partytown / Web Worker Offloading** | Marketing tags, analytics trackers, and advertising pixels (Facebook Pixel, Google Tag Manager) are offloaded to run inside a Web Worker, freeing the browser main thread for seamless user interactions. |
+| **Rendering** | **Server-rendered HTML cached at a CDN, with incremental regeneration: Next.js 16 (`next` 16.4.6) or React Router 8 in framework mode (`react-router` 8.5.2); on Shopify, add Hydrogen 2026-10 (`@shopify/hydrogen` 2026.10.3) to either** | web.dev recommends getting servers "as geographically close to your users as possible" with a CDN, and lists a far-away server and cache misses back to the origin as causes of high TTFB ([web.dev: Optimize LCP](https://web.dev/articles/optimize-lcp)). In Next.js 16, Incremental Static Regeneration (ISR) "is only supported when using the Node.js runtime (default)", and the Edge Runtime "does not support Incremental Static Regeneration" ([Next.js: ISR](https://nextjs.org/docs/app/guides/incremental-static-regeneration); [Next.js: Edge Runtime](https://nextjs.org/docs/app/api-reference/edge)), so the speed comes from the CDN cache in front of Node rendering, not from rendering in an edge function. Hydrogen 2026-10 is a Shopify layer (Storefront API client, cart, checkout routes) that "works with frameworks that run server code, like Next.js, React Router, Nuxt, Astro, and SvelteKit" ([Shopify: Hydrogen](https://shopify.dev/docs/storefronts/headless/hydrogen)). Why not Remix: `remix` 3.3.0 is now a different full-stack framework whose components keep state in plain JavaScript "rather than hooks" ([remix.run](https://remix.run/)), so this page names React Router instead. |
+| **Cart updates** | **Optimistic UI with React 19 `useOptimistic` (`react` 19.3.1), confirmed by a Server Function** | `useOptimistic` shows the optimistic value while an Action is pending; if the Action throws, "the UI shows what it showed before the optimistic update" ([react.dev: useOptimistic](https://react.dev/reference/react/useOptimistic)). React renamed "Server Actions" to Server Functions in September 2024; a Server Function passed to an action prop is still a Server Action ([react.dev: Server Functions](https://react.dev/reference/rsc/server-functions)). The server stays the authority on stock and price, so show the confirmed cart before payment. Hydrogen's cart store also "updates optimistically, and works without JavaScript" through native HTML forms ([Shopify: Hydrogen](https://shopify.dev/docs/storefronts/headless/hydrogen)). |
+| **CSS and images** | **Tailwind CSS 4 (`tailwindcss` 4.3.5) with a small inlined critical block; AVIF or WebP images with `width` and `height` set** | Tailwind generates CSS only for "the classes you've actually used" ([Tailwind: Detecting classes](https://tailwindcss.com/docs/detecting-classes-in-source-files)); it does not inline critical CSS for you. Inlining critical styles in the `<head>` removes a request, but web.dev warns that inlining a large amount "delays the transmission of the rest of the HTML document" and prevents caching ([web.dev: Extract critical CSS](https://web.dev/articles/extract-critical-css)). Set `width` and `height` on images, or reserve space with CSS `aspect-ratio`, so the browser holds the slot while the image loads ([web.dev: Optimize CLS](https://web.dev/articles/optimize-cls)). AVIF is Baseline widely available (since July 2026; [webstatus.dev: AVIF](https://webstatus.dev/features/avif)); MDN still advises a `<picture>` fallback ([MDN: Image types](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Image_types)). |
+| **CDN cache** | **`stale-while-revalidate` plus purge by cache tag** | `stale-while-revalidate` lets a cache serve a stale response while it revalidates in the background, "without blocking" ([RFC 5861](https://www.rfc-editor.org/rfc/rfc5861); [MDN: Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control)). Tag each product page with its product ID: Fastly reads a `Surrogate-Key` response header ([Fastly: Working with surrogate keys](https://www.fastly.com/documentation/guides/full-site-delivery/purging/working-with-surrogate-keys/)) and Cloudflare a `Cache-Tag` header, which it says purges "instantly" ([Cloudflare: Purge by cache-tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/)). Both CDNs strip the header before the shopper sees it. In Next.js 16, `revalidateTag(tag, 'max')` applies the same stale-while-revalidate rule to the framework cache ([Next.js: revalidateTag](https://nextjs.org/docs/app/api-reference/functions/revalidateTag)). |
+| **Third-party scripts** | **Fewer tags first; Partytown (`@qwik.dev/partytown` 1.0.5) for tags that only collect data** | Partytown moves third-party scripts into a web worker to dedicate the main thread to your own code ([Partytown](https://partytown.qwik.dev/)), and names Google Tag Manager and Facebook Pixel as its best fit because they mostly listen and post data in the background ([Partytown: Trade-offs](https://partytown.qwik.dev/trade-offs)). It is a performance tool, not a security boundary: worker code still gets synchronous DOM access through proxies ([Partytown: How does it work?](https://partytown.qwik.dev/how-does-partytown-work)). The older `@builder.io/partytown` package is deprecated on npm in favour of `@qwik.dev/partytown`. |
 
 ---
 
-## 3. What to Explicitly Avoid
+## 3. Avoid these: client-only rendering, unbounded tags, unsized media
 
-* **Do NOT use a purely client-rendered Single Page Application (SPA):**
-  A blank screen while downloading a 400 KB bundle directly loses shoppers. E-commerce requires immediate, rendered visual content on the first incoming packet.
-* **Do NOT let third-party marketing tags execute directly on the main thread:**
-  Analytics trackers and chat widgets are notorious for blocking the JavaScript event loop, driving Interaction to Next Paint (INP) into the red zone and causing cart clicks to fail.
-* **Do NOT omit explicit image bounding boxes:**
-  Allowing product images to load without predefined dimensions pushes description text and "Add to Cart" buttons downward, failing CLS audits and causing accidental taps.
+* **Do not ship the storefront as a client-rendered single-page app (position).** Until the JavaScript downloads and runs, the shopper sees no product. web.dev says a large gap between TTFB and First Contentful Paint can mean the browser must download many render-blocking assets, or must do a lot of work to render any meaningful content, "a classic sign of a site that relies heavily on client-side rendering" ([web.dev: Optimize LCP](https://web.dev/articles/optimize-lcp)). Send the product name, price, image and buy button in the server HTML.
+* **Do not let marketing and chat scripts run unchecked on the main thread.** A main-thread task over 50 milliseconds is a long task that delays input handling ([web.dev: Optimize long tasks](https://web.dev/articles/optimize-long-tasks)), so a busy tag manager can make "Add to cart" respond late and push INP past the 200 millisecond "good" line, or past 500 milliseconds, which web.dev rates poor ([web.dev: INP](https://web.dev/articles/inp)). Audit tags each quarter (position) and move data-only tags to Partytown.
+* **Do not omit image dimensions.** "Images without dimensions" heads web.dev's list of the most common causes of poor CLS ([web.dev: Optimize CLS](https://web.dev/articles/optimize-cls)). On a product page the shift pushes the description and "Add to cart" button down while the shopper is reaching for them.
+* **Do not cache personalized pages in a shared cache.** MDN warns that a personalized response without `private` "can be stored in a shared cache and end up being reused for multiple users" ([MDN: Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control)). Cart, account and checkout responses need `private` (or `no-store`); only the shared catalog HTML goes to the CDN.
 
 ---
 
-## 4. Constraint Checklist
-* Are product prices personalized per user or currency? Use edge geolocation headers to localize prices at the edge before serving the HTML.
-* Is inventory volatile during flash sales? Render the product description and media from static edge cache, and stream the live inventory counter asynchronously via a lightweight micro-fetch.
+## 4. Constraint checklist
+
+* **Do prices differ by country or currency?** Read the country from a CDN request header, such as Cloudflare's `CF-IPCountry` ([Cloudflare HTTP headers](https://developers.cloudflare.com/fundamentals/reference/http-headers/)) or Vercel's `x-vercel-ip-country` ([Vercel request headers](https://vercel.com/docs/headers/request-headers)). Then make the country part of the cache key, for example a `/gh/` or `/de/` path segment (position): a cache that ignores it serves one country's prices to everyone. MDN says a `Vary` header makes responses "separately cached based on the headers listed", which is most often used to create a cache key for content negotiation ([MDN: Vary](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Vary)).
+* **Does stock change during flash sales?** Serve the description and media from the cached HTML and stream the stock count. React Router 8 streams non-critical loader data when the loader returns a promise instead of awaiting it ([React Router: Streaming with Suspense](https://reactrouter.com/how-to/suspense)); Next.js 16 streams parts of a dynamic route "as soon as they're ready" through a `loading.tsx` file or a `<Suspense>` boundary ([Next.js: Linking and Navigating](https://nextjs.org/docs/app/getting-started/linking-and-navigating)). Re-check stock on the server when the item is added to the cart.
+* **Does analytics need exit events?** Partytown cannot reliably run `pagehide`, `visibilitychange` or `beforeunload` handlers on unload, so Google Analytics 4's automatic `user_engagement` event is not sent from it ([Partytown: Trade-offs](https://partytown.qwik.dev/trade-offs)). Keep that script on the main thread if engagement time matters to the marketing team.
+
+---
+
+## 5. When this playbook is the wrong choice
+
+* **A small catalog on a hosted theme (reasoning).** A headless storefront adds a framework, hosting and a CDN configuration to maintain. Shopify presents Hydrogen as "one way to build a headless storefront" and links a separate guide on whether to go headless at all ([Shopify: Hydrogen](https://shopify.dev/docs/storefronts/headless/hydrogen)). If the hosted theme already meets the thresholds in section 1, fix images and tags there first.
+* **Most pages are personalized per signed-in buyer (reasoning).** B2B stores with contract pricing on every product page cannot share cached HTML across users, because personalized responses must stay out of shared caches ([MDN: Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control)). Cache the shared shell and fetch prices per user, or see the [enterprise B2B SaaS playbook](enterprise_b2b_saas.md).
+* **Scripts that build UI on the page (sourced).** Partytown says it "may not be best suited" for UI-intensive scripts, for example ones that pop up a dialog, that scripts inserting a large amount of DOM nodes "may not be the best candidates", and that `event.preventDefault()` from worker code has no effect ([Partytown: Trade-offs](https://partytown.qwik.dev/trade-offs)). Keep UI-building scripts such as chat widgets on the main thread, and load them late or on interaction instead (position).
+* **Rendering code that needs Node.js APIs or ISR in Next.js 16 (sourced).** The Edge Runtime does not support all Node.js APIs or ISR ([Next.js: Edge Runtime](https://nextjs.org/docs/app/api-reference/edge)); use the default Node.js runtime behind the CDN.

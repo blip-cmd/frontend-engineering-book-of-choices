@@ -1,5 +1,7 @@
 # Architectural Methodology: Local-First Software and CRDTs
 
+> **Unverified background notes.** This file is an AI-generated research summary from the book's first draft. It has not been checked against the [content standards](../../CONTENT_STANDARDS.md) and is not part of the book. The verified chapters in `book/` cite primary sources directly; rely on those instead.
+
 * **Identifier:** `local-first-and-crdts`
 * **Pioneers & Key Researchers:** Ink & Switch (Kleppmann, Litt, van Hardenberg), Yjs (Kevin Jahns), Automerge (Martin Kleppmann, Peter van Hardenberg)
 * **Core Mechanisms:** Client-side persistent databases (IndexedDB, OPFS), Conflict-Free Replicated Data Types, Peer-to-Peer / Sync-Server synchronization, Zero-latency optimistic mutation
