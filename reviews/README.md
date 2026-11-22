@@ -17,3 +17,4 @@ Ledgers are written by the verification process in [CONTENT_STANDARDS.md](../CON
 | Playbook: Enterprise B2B SaaS and Data Grids | agent-verified | 2026-11 | 2027-05 | [ledger](enterprise-b2b-saas.md) |
 | Playbook: Collaborative Canvas and Document Workspaces | agent-verified | 2026-11 | 2027-05 | [ledger](collaborative-canvas-workspace.md) |
 | Playbook: Content-First Publishing and Documentation | agent-verified | 2026-11 | 2027-05 | [ledger](content-first-publishing.md) |
+| Playbook: Low-Latency Global E-Commerce Storefronts | agent-verified | 2026-11 | 2027-05 | [ledger](low-latency-ecommerce.md) |
