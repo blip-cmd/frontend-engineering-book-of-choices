@@ -22,6 +22,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Set up Pandoc (Markdown to Typst for the PDF)
+        uses: pandoc/actions/setup@v1
+        with:
+          version: "3.10"
+
       - name: Set up Typst CLI
         uses: typst-community/setup-typst@v5
 
