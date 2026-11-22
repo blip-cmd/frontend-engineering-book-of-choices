@@ -14,21 +14,15 @@
 
 ---
 
-## Phase 2: Quality Pass on Every Page (In progress, help wanted)
+## Phase 2: Quality Pass on Every Page (Done 2026-11-22; human review welcome)
 
-Every page is verified against [CONTENT_STANDARDS.md](CONTENT_STANDARDS.md), one per week, by the automated [Agent Verification Protocol](docs/WORKFLOW.md#2-the-agent-verification-protocol). Human expert review (`reviewed`, `gold`) is welcome on any page: ten pass/fail gates (sourced numbers, working code, no invented packages or experience, a named human reviewer...) and ten scored dimensions. Each page's status lives in its front matter (`status: draft | reviewed | gold`) and is shown on the website. Run `npm run audit` to see the current count.
+All 20 pages are **agent-verified**: an author pass checked every claim against primary sources, and an independent verifier pass re-checked it (roughly 900 claims in total). Each page links its claim ledger; the index is [reviews/README.md](reviews/README.md). The first draft's most common faults were unsourced percentages and multipliers, outdated versions, misattributed references, and claims that official docs contradict. All are fixed or removed.
 
-Review order (highest risk first, because readers copy examples and act on numbers):
+Next for content quality:
 
-1. [x] Appendix C: Frontend Security Hardening Checklist (agent-verified 2026-11; [ledger](reviews/appendix-c-frontend-security-checklist.md))
-2. [ ] Appendix B: Core Web Vitals Triage Guide
-3. [ ] Appendix D: Migration Playbooks
-4. [ ] Chapter 3: State and Cache Topologies, and the essay "Why Server Caches Replace Most Redux Stores"
-5. [ ] Essay: The 14 KB TCP Slow-Start Budget, and Chapter 7: Delivery and Build Pipeline
-6. [ ] Decision playbooks (5)
-7. [ ] Chapters 0, 1, 2, 4, 5, 6, 8 and Appendix A
-
-Known issues across the draft: unsourced percentages and multipliers, no verification dates, and generic headings ("The Landscape of Choices") repeated across chapters.
+* [ ] Human expert review of any page (status `reviewed`, then `gold`): see the [expert review issue](https://github.com/blip-cmd/frontend-engineering-book-of-choices/issues/3)
+* [ ] Verified entries for the known omissions listed in each ledger's section 3
+* [ ] Re-verification as `review_by` dates arrive (automated weekly)
 
 ### Content-standards tooling
 
@@ -56,12 +50,14 @@ Topics a complete frontend reference still lacks:
 
 ---
 
-## Phase 4: Calculator and CLI (Open)
+## Phase 4: Calculator, CLI and Recipes (In progress)
 
+* [x] Calculator explanations aligned with the verified chapters (2026-11-22)
 * [ ] One shared rules file used by both the web calculator and the CLI, so they never disagree
 * [ ] More questions: team size and experience, hosting budget, device and network spectrum
 * [ ] Export an Architectural Decision Record from the browser
 * [ ] Tests for the calculator's recommendations
+* [x] Recipes rebuilt as buildable starters on current versions, built in CI on every pull request, and watched by the weekly freshness report (2026-11-22)
 * [ ] Publish the CLI to npm as `@blip-cmd/choices`
 
 ---
