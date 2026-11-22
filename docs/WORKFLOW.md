@@ -34,7 +34,7 @@ Pages move from `draft` to `agent-verified` without a human reviewer, and honest
 
 Then the workflow checks that only the page, its ledger and `reviews/README.md` changed, and runs every repository check before opening the pull request.
 
-The website shows such pages as **"Verified by AI agents"**, with a link to the ledger and the line "It has not yet been reviewed by a human expert." The `reviewed` and `gold` statuses remain reserved for human experts: community contributors, or the maintainer for future volumes in their own field.
+The website shows such pages as **"AI-checked"**, with a link to the ledger and the note "Checked against official docs by two separate AI runs. Not yet reviewed by a human expert." The `reviewed` and `gold` statuses remain reserved for human experts: community contributors, or the maintainer for future volumes in their own field.
 
 ### One-time setup (maintainer)
 

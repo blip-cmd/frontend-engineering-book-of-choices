@@ -44,7 +44,7 @@ ledger:                  # path to the page's claim ledger in reviews/ (required
 ---
 ```
 
-The website shows each page's status in a box at the top: a warning for drafts; "Verified by AI agents" with a link to the ledger for agent-verified pages; and the reviewers, verification date and next review date for human-reviewed pages. The site's separate "Last updated" date only tracks edits. **`last_verified` is the date that means the facts were checked.**
+The website shows each page's status in a box at the top: a warning for drafts; "AI-checked" with a link to the ledger for agent-verified pages; and the reviewers, verification date and next review date for human-reviewed pages. The site's separate "Last updated" date only tracks edits. **`last_verified` is the date that means the facts were checked.**
 
 | Status | Meaning | Requirements |
 | :--- | :--- | :--- |

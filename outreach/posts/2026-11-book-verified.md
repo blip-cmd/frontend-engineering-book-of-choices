@@ -19,7 +19,7 @@ What the checks caught in the draft:
 • outdated advice: wrong INP thresholds, the archived Recoil library, Vue grouped with signal frameworks
 • a security claim that a third-party script tool isolates trackers from your form fields (its own docs say otherwise)
 
-Each page says it was verified by AI agents and not yet reviewed by a human expert. Expert reviews are the next step, and very welcome.
+Each page is labelled "AI-checked" and says it has not yet been reviewed by a human expert. Expert reviews are the next step, and very welcome.
 
 https://blip-cmd.github.io/frontend-engineering-book-of-choices/
 

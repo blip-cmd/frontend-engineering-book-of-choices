@@ -110,12 +110,12 @@ function reviewBanner(meta, src) {
   const ledgerLink = meta.ledger ? `[claim ledger](${REPO_URL}/blob/${BRANCH}/${meta.ledger})` : 'claim ledger';
   if (meta.status === 'agent-verified') {
     return [
-      ':::tip[Verified by AI agents]',
-      `Every claim on this page was checked against official documentation and primary sources by AI agents, following the [content standards](${STANDARDS_URL}). The ${ledgerLink} lists each claim and its source, plus an independent second check.` +
+      ':::tip[AI-checked]',
+      `Checked against official docs by two separate AI runs, following the [content standards](${STANDARDS_URL}). Not yet reviewed by a human expert. The ${ledgerLink} lists each claim and its source.` +
         (meta.last_verified ? ` Last verified ${meta.last_verified}` : '') +
         (meta.verified_against ? ` against ${meta.verified_against}.` : meta.last_verified ? '.' : '') +
         (meta.review_by ? ` Next check due ${meta.review_by}.` : '') +
-        ` It has not yet been reviewed by a human expert. [Report an error](${issue}).`,
+        ` [Report an error](${issue}).`,
       ':::',
     ].join('\n');
   }
