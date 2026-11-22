@@ -1,34 +1,19 @@
 import type { NextConfig } from 'next';
 
-// Next.js configuration for Low-Latency E-Commerce Storefronts
-// Implements Playbook 5 recommendations: strict AVIF/WebP image optimization,
-// edge runtime headers, and tagged cache invalidation support.
+// Playbook 5: keep the default Node.js runtime so ISR works, and put a CDN in
+// front for the public catalog HTML. Personalised responses (the cart) set
+// Cache-Control: private in their own route handler, not in this shared config.
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   poweredByHeader: false,
-  compress: true,
   images: {
     formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 86400,
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   headers: async () => [
     {
-      source: '/(.*)',
+      source: '/:path*',
       headers: [
-        {
-          key: 'X-Content-Type-Options',
-          value: 'nosniff',
-        },
-        {
-          key: 'X-Frame-Options',
-          value: 'DENY',
-        },
-        {
-          key: 'Referrer-Policy',
-          value: 'strict-origin-when-cross-origin',
-        },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
       ],
     },
   ],

@@ -131,6 +131,13 @@ class TestContentStandards(unittest.TestCase):
         errors, _ = audit_content_page(self.page(status="agent-verified", lv="2026-11", rb="2027-05", lg=self.LEDGER), date(2026, 11, 21))
         self.assertEqual(errors, [])
 
+    def test_picker_skips_pages_in_open_pull_requests(self):
+        from pipelines.scripts.next_review import pick
+        page, _ = pick(busy=set())
+        if page:
+            other, _ = pick(busy={page})
+            self.assertNotEqual(other, page)
+
     def test_unverified_marker_and_stale_facts_fail(self):
         errors, _ = audit_content_page(self.page(body="<!-- UNVERIFIED: no source -->"), date(2026, 11, 21))
         self.assertTrue(any("UNVERIFIED" in e for e in errors))

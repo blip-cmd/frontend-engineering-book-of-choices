@@ -21,37 +21,37 @@ RECIPES_DIR = REPO_ROOT / "recipes"
 ARCHETYPE_RECIPES = {
     "content_first_astro": {
         "title": "Content Publishing and Documentation",
-        "stack": "Astro + Preact Islands + Tailwind CSS",
+        "stack": "Astro 7 + Preact 11 islands + Tailwind 4",
         "recipe_dir": "content_first_astro",
         "playbook": "book/09_decision_playbooks/content_first_publishing.md"
     },
     "enterprise_b2b_saas": {
         "title": "B2B SaaS, Admin Portals, Data Grids",
-        "stack": "Vite + React + TanStack Query/Table/Virtual + Radix UI + Zod",
+        "stack": "Vite 8 + React 19 + TanStack Query 5 / Table 9 + Zod 4 + Tailwind 4",
         "recipe_dir": "enterprise_b2b_saas",
         "playbook": "book/09_decision_playbooks/enterprise_b2b_saas.md"
     },
     "realtime_dashboard": {
         "title": "Real-Time Telemetry and Financial Consoles",
-        "stack": "Vite + Solid.js Signals + uPlot + Web Worker Offload",
+        "stack": "Vite 8 + Solid 2 signals + uPlot + Web Worker",
         "recipe_dir": "realtime_dashboard",
         "playbook": "book/09_decision_playbooks/high_frequency_realtime_dashboard.md"
     },
     "collaborative_canvas": {
         "title": "Collaborative Canvas and Document Workspaces",
-        "stack": "Vite + React + Yjs (CRDT) + OPFS / IndexedDB",
+        "stack": "Vite 8 + React 19 + Yjs 13 (CRDT) + IndexedDB, optional y-websocket sync",
         "recipe_dir": "collaborative_canvas",
         "playbook": "book/09_decision_playbooks/collaborative_canvas_workspace.md"
     },
     "low_latency_ecommerce": {
         "title": "Low-Latency Global E-Commerce Storefronts",
-        "stack": "Next.js 15 Streaming SSR + Edge Headers + Tailwind CSS",
+        "stack": "Next.js 16 on Node.js + ISR revalidation + useOptimistic cart + Tailwind 4",
         "recipe_dir": "low_latency_ecommerce",
         "playbook": "book/09_decision_playbooks/low_latency_ecommerce.md"
     },
     "shared_configs": {
         "title": "Base Monorepo Configurations",
-        "stack": "Shared TypeScript tsconfig.base.json and Tailwind Config",
+        "stack": "Shared tsconfig.base.json and Tailwind 4 design tokens (tokens.css)",
         "recipe_dir": "shared_configs",
         "playbook": "book/05_design_engineering_and_ui.md"
     }
@@ -99,7 +99,7 @@ def evaluate_architecture(profile):
 
     # Reactivity Engine
     if profile.get("update_frequency") == "high_telemetry":
-        recommendation["reactivity"] = "Fine-Grained Signals (Solid.js or Preact Signals)"
+        recommendation["reactivity"] = "Fine-Grained Signals (Solid 2, Svelte 5 runes, or Preact with signals in JSX)"
         recommendation["reactivity_chapter"] = "book/02_the_reactivity_dilemma.md"
     elif profile.get("team_size") == "solo_founder":
         recommendation["reactivity"] = "Compile-Time AST (Svelte 5 Runes) or React"
@@ -129,7 +129,7 @@ def evaluate_architecture(profile):
 
     # Styling & Design Engineering
     if profile.get("brand_uniqueness") == "custom_brand":
-        recommendation["ui"] = "Headless Primitives (shadcn/ui, Radix UI) + Tailwind CSS"
+        recommendation["ui"] = "Headless Primitives (shadcn/ui on Base UI or Radix) + Tailwind 4"
         recommendation["ui_chapter"] = "book/05_design_engineering_and_ui.md"
     else:
         recommendation["ui"] = "Complete UI Component Suite (MUI, Ant Design, Mantine)"

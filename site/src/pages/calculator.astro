@@ -145,14 +145,14 @@ const questions = [
 			recs.push({
 				area: 'Rendering',
 				choice: 'Static pages with interactive islands (for example Astro)',
-				why: 'Search engines and link previews get complete HTML instantly, and JavaScript is only shipped for the few parts of the page that are interactive.',
+				why: 'Search engines and link previews get complete HTML in the first response, and JavaScript is only shipped for the parts of the page that are interactive.',
 				read: CH.rendering,
 			});
 		} else if (a.seo === 'critical') {
 			recs.push({
 				area: 'Rendering',
 				choice: 'Server-side rendering with streaming (for example Next.js, React Router, Nuxt or SvelteKit)',
-				why: 'Content that changes per request still needs indexable HTML. Rendering on the server, and streaming it, keeps first paint fast without making every page static.',
+				why: 'Google can render JavaScript, but not every crawler can, so content that must rank is safest as server-rendered HTML. Streaming lets the first parts of a dynamic page arrive before the slow parts finish.',
 				read: CH.rendering,
 			});
 		} else if (localFirst) {
@@ -184,8 +184,8 @@ const questions = [
 			a.updates === 'high'
 				? {
 						area: 'Reactivity',
-						choice: 'Fine-grained signals (Solid, Preact Signals, Svelte 5 runes, Vue refs)',
-						why: 'At dozens of updates per second, re-rendering whole component trees becomes the bottleneck. Signals update only the DOM nodes that depend on the changed value. Also batch incoming data and move parsing into a Web Worker.',
+						choice: 'Fine-grained signals (Solid, Svelte 5 runes, or Preact with signals passed straight into JSX)',
+						why: 'At high update rates, re-rendering component trees for every tick is wasted work. Signal-based rendering updates the parts of the page that read the changed value. Also batch incoming data per animation frame and move parsing into a Web Worker. Vue 3.5 still renders through a virtual DOM, so it is not in this list (Chapter 2).',
 						read: CH.reactivity,
 					}
 				: {
@@ -202,13 +202,13 @@ const questions = [
 				? {
 						area: 'State and data',
 						choice: 'Local database in the browser plus a sync engine or CRDTs (for example SQLite in Wasm or IndexedDB, with Yjs or Automerge)',
-						why: 'Reads and writes go to the device first, so the app works offline and feels instant. The cost is real: conflict handling, migrations and a sync protocol are now your problem.',
+						why: 'Reads and writes go to the device first, so the app keeps working offline and responds without a network round trip. The cost is real: conflict handling (concurrent edits to the same field keep only one value), migrations and a sync protocol are now your problem.',
 						read: CH.offline,
 					}
 				: {
 						area: 'State and data',
 						choice: 'A server cache (TanStack Query or SWR) plus URL and component state',
-						why: 'Most "global state" is really a copy of server data. A server cache handles loading, caching, refetching and deduplication for you, which leaves very little that needs a global store.',
+						why: 'Our recommendation: much of what apps keep in global stores is a copy of server data. A server cache handles loading, caching, refetching and deduplication of in-flight requests, which often leaves little that needs a global store.',
 						read: CH.state,
 					},
 		);
@@ -235,14 +235,14 @@ const questions = [
 			a.brand === 'custom'
 				? {
 						area: 'UI components',
-						choice: 'Design tokens plus unstyled accessible primitives (Radix, React Aria, Ark UI), styled your way',
-						why: 'Headless primitives handle the hard accessibility and keyboard behaviour while leaving every pixel to your brand. Tokens keep colours, spacing and type consistent across themes.',
+						choice: 'Design tokens plus unstyled accessible primitives (Base UI, Radix, React Aria, Ark UI), styled your way',
+						why: 'Headless primitives handle much of the keyboard and ARIA behaviour while leaving every pixel to your brand, though you still label components and test with assistive technology. Tokens keep colours, spacing and type consistent across themes.',
 						read: CH.ui,
 					}
 				: {
 						area: 'UI components',
 						choice: 'A pre-styled component library (for example MUI, Mantine or Ant Design)',
-						why: 'You get a complete, consistent, accessible set of components on day one. The trade-off is that a distinctive look later means fighting the library\'s defaults.',
+						why: 'You get a complete, consistent set of components on day one. The trade-off is that a distinctive look later means fighting the library\'s defaults.',
 						read: CH.ui,
 					},
 		);

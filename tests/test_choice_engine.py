@@ -39,7 +39,7 @@ class TestChoiceEngine(unittest.TestCase):
         rec = evaluate_architecture(profile)
         self.assertIn("Islands Architecture", rec["execution"])
         self.assertIn("book/01_where_code_runs.md", rec["execution_chapter"])
-        self.assertIn("Tailwind CSS", rec["ui"])
+        self.assertIn("Tailwind", rec["ui"])
         self.assertEqual(rec["suggested_recipe"], "content_first_astro")
 
     def test_b2b_saas_profile(self):

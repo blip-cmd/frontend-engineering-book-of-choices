@@ -30,6 +30,11 @@ jobs:
         if: github.event_name == 'pull_request'
         run: python pipelines/scripts/check_commits.py --range "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
 
+      - name: Set up Pandoc (Markdown to Typst for the PDF)
+        uses: pandoc/actions/setup@v1
+        with:
+          version: "3.10"
+
       - name: Standards audit (no em dashes, no broken relative links)
         run: python pipelines/scripts/audit_repo_standards.py
 
@@ -44,3 +49,35 @@ jobs:
         run: |
           npm ci
           npm run build
+
+  recipes:
+    name: recipe ${{ matrix.recipe }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        recipe: [collaborative_canvas, content_first_astro, enterprise_b2b_saas, low_latency_ecommerce, realtime_dashboard]
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: recipes/${{ matrix.recipe }}/package-lock.json
+
+      - name: Install from the lockfile
+        working-directory: recipes/${{ matrix.recipe }}
+        run: npm ci --no-audit --no-fund
+
+      - name: Type check
+        working-directory: recipes/${{ matrix.recipe }}
+        run: |
+          npm run --if-present typecheck
+          npm run --if-present check
+
+      - name: Production build
+        working-directory: recipes/${{ matrix.recipe }}
+        run: npm run build

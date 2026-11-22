@@ -1,21 +1,24 @@
 {
   "name": "recipe-realtime-dashboard",
   "version": "1.0.0",
-  "description": "Production configuration for High-Frequency Real-Time Telemetry and Dashboards based on the Book of Choices",
+  "private": true,
+  "license": "MIT",
+  "description": "Minimal real-time dashboard starter: Solid 2, uPlot, a Web Worker and a ring buffer",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "solid-js": "^1.8.22",
-    "uplot": "^1.6.31"
+    "@solidjs/web": "^2.0.3",
+    "solid-js": "^2.0.3",
+    "uplot": "^1.6.32"
   },
   "devDependencies": {
-    "terser": "^5.31.6",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.3",
-    "vite-plugin-solid": "^2.10.2"
+    "@solidjs/vite-plugin": "^3.0.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
   }
 }

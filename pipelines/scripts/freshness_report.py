@@ -7,6 +7,7 @@ Weekly freshness report (see docs/WORKFLOW.md). Checks, without changing anythin
      npm major version differs from the recorded baseline, and the pages that mention them.
   2. Overdue pages: verified pages whose review_by month has passed.
   3. Broken links: external links in the book, essays and project docs.
+  4. Recipes: dependencies in recipes/*/package.json a major version behind npm.
 
 Writes a Markdown report to stdout (or --output FILE). Exit code is always 0;
 the report is meant to be read by people and by the agent review job.
@@ -76,6 +77,30 @@ def check_versions(texts):
     return rows, errors
 
 
+def check_recipes():
+    """(recipe, package, declared range, latest) for recipe dependencies a major behind npm."""
+    wanted = []
+    for pkg_json in sorted((REPO_ROOT / "recipes").glob("*/package.json")):
+        data = json.loads(pkg_json.read_text(encoding="utf-8"))
+        for section in ("dependencies", "devDependencies"):
+            for name, spec in data.get(section, {}).items():
+                m = re.search(r"\d+(?:\.\d+)?", spec)
+                if m:
+                    wanted.append((pkg_json.parent.name, name, spec, m.group(0)))
+
+    def one(item):
+        recipe, name, spec, declared = item
+        try:
+            latest = npm_latest(name)
+        except Exception:
+            return None
+        declared_major = declared if declared.startswith("0.") else declared.split(".")[0]
+        return (recipe, name, spec, latest) if major_of(latest) != declared_major else None
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        return [row for row in pool.map(one, wanted) if row]
+
+
 def check_overdue(texts, today):
     month = today.strftime("%Y-%m")
     overdue = []
@@ -133,7 +158,7 @@ def check_links(texts):
     return len(links), broken, unverifiable
 
 
-def render(today, versions, version_errors, overdue, link_total, broken, unverifiable, texts):
+def render(today, versions, version_errors, overdue, link_total, broken, unverifiable, texts, recipes_behind=()):
     statuses = {}
     for text in texts.values():
         s = split_front_matter(text)[0].get("status", "missing")
@@ -154,6 +179,14 @@ def render(today, versions, version_errors, overdue, link_total, broken, unverif
 
     out += ["", "## Pages overdue for re-verification", ""]
     out += [f"- `{rel}` (review_by {rb})" for rel, rb in overdue] or ["None."]
+
+    out += ["", "## Recipe dependencies behind the latest major", ""]
+    if recipes_behind:
+        out += ["| Recipe | Package | Declared | Latest |", "| :--- | :--- | :--- | :--- |"]
+        out += [f"| `{r}` | `{n}` | {spec} | {latest} |" for r, n, spec, latest in recipes_behind]
+        out += ["", "Upgrade the recipe, run `npm install`, its type check and `npm run build`, and commit the lockfile."]
+    else:
+        out.append("All recipe dependencies are on the latest major.")
 
     out += ["", f"## Links ({link_total} checked)", ""]
     if broken:
@@ -178,7 +211,8 @@ def main():
     versions, version_errors = check_versions(texts)
     overdue = check_overdue(texts, today)
     link_total, broken, unverifiable = (0, [], []) if args.skip_links else check_links(texts)
-    report = render(today, versions, version_errors, overdue, link_total, broken, unverifiable, texts)
+    recipes_behind = check_recipes()
+    report = render(today, versions, version_errors, overdue, link_total, broken, unverifiable, texts, recipes_behind)
     if args.output:
         Path(args.output).write_text(report, encoding="utf-8")
     else:
