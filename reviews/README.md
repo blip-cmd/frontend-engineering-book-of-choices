@@ -19,3 +19,4 @@ Ledgers are written by the verification process in [CONTENT_STANDARDS.md](../CON
 | Playbook: Content-First Publishing and Documentation | agent-verified | 2026-11 | 2027-05 | [ledger](content-first-publishing.md) |
 | Playbook: Low-Latency Global E-Commerce Storefronts | agent-verified | 2026-11 | 2027-05 | [ledger](low-latency-ecommerce.md) |
 | Chapter 1: Where Code Runs | agent-verified | 2026-11 | 2027-05 | [ledger](where-code-runs.md) |
+| Chapter 2: The Reactivity Dilemma | agent-verified | 2026-11 | 2027-05 | [ledger](the-reactivity-dilemma.md) |
