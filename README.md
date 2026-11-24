@@ -74,6 +74,13 @@ The starter configurations live in [recipes/](recipes/).
 └── skills/        # Prompts used to research and draft chapters (kept for transparency)
 ```
 
+### Tech Stack
+
+* **Website:** Astro Starlight, deployed to GitHub Pages
+* **CLI:** Node.js
+* **Build and audit pipelines:** Python, with Typst for the PDF
+* **Checks:** Node and Python tests plus a standards audit, run in GitHub Actions
+
 ### Running Locally
 
 ```bash
@@ -85,6 +92,12 @@ npm test
 python -m unittest discover -s tests -p "test_*.py"
 npm run audit
 ```
+
+---
+
+## What Is Next
+
+Human expert review of the pages, type-checked code samples and new chapters (testing strategy, accessibility, forms) come next. See [ROADMAP.md](ROADMAP.md) for the full list.
 
 ---
 
